@@ -522,3 +522,7 @@ $(document).on('click','#submit_reservation',function(){
 	$('#form_reservation').submit();
 	e.preventDefault();
 })
+
+$(document).on('change','#students_count', function() {
+   alert('value changed');
+});

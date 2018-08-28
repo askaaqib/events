@@ -76589,6 +76589,10 @@ $(document).on('click', '#submit_reservation', function () {
 	e.preventDefault();
 });
 
+$(document).on('change', '#students_count', function () {
+	alert('value changed');
+});
+
 /***/ }),
 
 /***/ "./resources/assets/js/plugins.js":
