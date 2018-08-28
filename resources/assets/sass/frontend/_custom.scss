@@ -1,0 +1,130 @@
+// Override the Bootstrap defaults without modifying key, versioned files.
+
+
+.hide{
+        display:none;
+    }
+.btn-custs{
+  height: 100px;
+  width: 150px;
+  margin: 15px;
+  border-radius: 7px;
+  font-size: 20px;
+}
+
+.calendar{
+    border: 5px solid #ccc;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 0
+
+}
+
+.calendar_div{
+
+    border: 5px solid #007bff42;
+    font-size: 23px;
+    text-align: center;
+    flex-basis: 16.6%;
+    height:110px;
+    cursor:pointer;
+}
+
+.calendar_Date{
+border: 5px solid #ccc;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    font-size: 50px;
+    font-weight: bold;
+
+}
+
+.left_bar , .right_bar{
+  cursor: pointer;  
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+.left_bar{
+  border-right:5px solid #ccc;
+}
+
+.right_bar{
+  border-left:5px solid #ccc;
+}
+
+.main_date{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 0
+
+}
+
+.seats_left::before { 
+    content: "Remaining: ";
+    font-size:12px;
+}
+
+.booked::before{
+	content: "Booked : ";
+	font-size:12px;
+}
+
+.seats_left{
+	color:red;
+
+}
+
+.greystyle{
+	background:#ccc;
+}
+
+.greenstyle{
+	background:#28a745;
+}
+
+.login-register{
+  display:flex;
+  justify-content:space-evenly;
+}
+
+.btn-custs-reg-login{
+  height: 100px;
+  width: 250px;
+  margin: 15px;
+  border-radius: 7px;
+  font-size: 20px;
+}
+
+.logged-in{
+  display:flex;
+  justify-content:center;
+  font-weight:bold
+}
+
+#terms_overlay{
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: #000000;
+  opacity: 0.8;
+}
+
+.terms_conditions{
+    position: fixed;    
+    z-index: 1050;
+    width: 55%;
+    top: 50px;    
+}
