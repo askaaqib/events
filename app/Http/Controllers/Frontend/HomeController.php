@@ -66,7 +66,17 @@ class HomeController extends Controller
 
    }
 
-   public function getReservation(){
+    public function getReservation(){
       return view('frontend.user.eventreservation');
    }
+
+   public function downloadForm(){
+
+    ob_end_clean();
+    $headers = array(
+        'Content-Type: image/png',
+    );
+    return response()->download(storage_path() . '/parser.docx', 'final.docx', $headers);
+   }
+
 }
