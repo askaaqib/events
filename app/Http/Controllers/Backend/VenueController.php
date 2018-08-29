@@ -137,6 +137,10 @@ class VenueContoller extends Controller
      */
     public function destroy($id)
     {
-        //
+        $venues = Venues::find($id);
+        $venues->delete();
+
+        $data = array('success' => true, 'message' => 'Venue Deleted Successfully');
+        return redirect('admin/venues')->with('data', $data);
     }
 }

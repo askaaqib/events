@@ -196,7 +196,9 @@ return [
                 'events_name'       => 'Event Name',
                 'start_date'        => 'Start Date',
                 'end_date'          => 'End Date',
-                'active'            => 'Active'
+                'active'            => 'Active',
+                'capacity'          => 'Capacity',
+
             ]
         ],
 

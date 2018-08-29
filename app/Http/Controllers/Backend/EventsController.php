@@ -87,7 +87,7 @@ class EventsController extends Controller
     public function edit($id)
     {
         //
-        $events = Events::find($id)->venues;
+        $events = Events::find($id);
         $venues = Venues::all()->pluck('venue_name', 'id');
 
         return view('backend.events.edit' , compact('events', 'venues'));
@@ -100,9 +100,29 @@ class EventsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $request->validate([
+            'venues_id' => 'required',
+            'event_name' => 'required',
+            'start_date' => 'required',
+        ]);
+
+        $events = Events::find($request->id);
+        $events->venues_id = $request->venues_id;
+        $events->event_name = $request->event_name;
+        $events->start_date = $request->start_date;
+        $events->active = $request->active;
+        
+        if($events->save()){
+            $data = array('success' => true, 'message' => 'Event Updated Successfully');
+            return redirect('admin/events')->with('data', $data);
+
+        }else{
+
+            $data = array('success' => false, 'message' => 'Something Went Wrong');
+            return back()->with('data', $data);
+        }
     }
 
     /**
@@ -113,6 +133,10 @@ class EventsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $events = Events::find($id);
+        $events->delete();
+
+        $data = array('success' => true, 'message' => 'Event Deleted Successfully');
+        return redirect('admin/events')->with('data', $data);
     }
 }
