@@ -53,6 +53,32 @@ trait AuthenticatesUsers
         return $this->sendFailedLoginResponse($request);
     }
 
+    public function eventslogin(Request $request)
+    {
+        $this->validateLogin($request);
+
+        // If the class is using the ThrottlesLogins trait, we can automatically throttle
+        // the login attempts for this application. We'll key this by the username and
+        // the IP address of the client making these requests into this application.
+        if ($this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
+        }
+
+        if ($this->attempteventLogin($request)) {
+            return $this->sendEventLoginResponse($request);
+        }
+
+        // If the login attempt was unsuccessful we will increment the number of attempts
+        // to login and redirect the user back to the login form. Of course, when this
+        // user surpasses their maximum number of attempts they will get locked out.
+        $this->incrementLoginAttempts($request);
+
+        return $this->sendFailedLoginResponse($request);
+    }
+
+
     /**
      * Validate the user login request.
      *
@@ -73,8 +99,18 @@ trait AuthenticatesUsers
      * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
+    protected function attempteventLogin(Request $request)
+    {
+        //$this->clearLoginAttempts($request);
+        return $this->guard()->attempt(
+            $this->credentials($request), $request->filled('remember')
+        );
+    }
+
+
     protected function attemptLogin(Request $request)
     {
+        $this->clearLoginAttempts($request);
         return $this->guard()->attempt(
             $this->credentials($request), $request->filled('remember')
         );
@@ -90,6 +126,22 @@ trait AuthenticatesUsers
     {
         return $request->only($this->username(), 'password');
     }
+
+     /**
+     * Send the response after the user was authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    protected function sendEventLoginResponse(Request $request)
+    {
+        $request->session()->regenerate();
+
+        $this->clearLoginAttempts($request);
+
+        return  response()->json(['success'=> true, 'message' => 'Intended Logged In']);
+    }
+
 
     /**
      * Send the response after the user was authenticated.

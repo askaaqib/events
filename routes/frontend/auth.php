@@ -5,7 +5,7 @@
  * All route names are prefixed with 'frontend.auth'.
  */
 Route::get('event-login', 'EventLoginController@showEventLoginForm')->name('event.login');
-Route::post('event-login', 'EventLoginController@eventlogin')->name('event.login.post');
+Route::post('event-login', 'EventLoginController@eventslogin')->name('event.login.post');
 Route::get('event-register', 'EventRegisterController@showEventRegistrationForm')->name('eventregister');
 Route::post('event-register', 'EventRegisterController@register')->name('eventregister');
 Route::get('is-logged-in', function(){

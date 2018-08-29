@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth as Auths;
 use Illuminate\Http\Request;
 use App\Exceptions\GeneralException;
 use App\Http\Controllers\Controller;
@@ -11,16 +11,22 @@ use Redirect;
 use Session;
 use Validator;
 use Illuminate\Support\Facades\Input;
-
+use App\Helpers\Auth\Auth;
+use App\Helpers\Frontend\Auth\Socialite;
+use App\Events\Frontend\Auth\UserLoggedIn;
+use App\Events\Frontend\Auth\UserLoggedOut;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Repositories\Frontend\Auth\UserSessionRepository;
 /**
  * Class LoginController.
  */
 class EventLoginController extends Controller
 {
+    use AuthenticatesUsers;
 
     public function showEventLoginForm()
     {
-        if(Auth::check()){
+        if(Auths::check()){
             return response()->json(['success' => true, 'message' => 'Already Logged In']);
         }
         return view('frontend.auth.event-login');
@@ -33,7 +39,45 @@ class EventLoginController extends Controller
     }
 
    
+/**
+     * The user has been authenticated.
+     *
+     * @param Request $request
+     * @param         $user
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws GeneralException
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        /*
+         * Check to see if the users account is confirmed and active
+         */
+        if (! $user->isConfirmed()) {
+            auth()->logout();
 
+            // If the user is pending (account approval is on)
+            if ($user->isPending()) {
+                throw new GeneralException(__('exceptions.frontend.auth.confirmation.pending'));
+            }
+
+            // Otherwise see if they want to resent the confirmation e-mail
+
+            throw new GeneralException(__('exceptions.frontend.auth.confirmation.resend', ['url' => route('frontend.auth.account.confirm.resend', $user->{$user->getUuidName()})]));
+        } elseif (! $user->isActive()) {
+            auth()->logout();
+            throw new GeneralException(__('exceptions.frontend.auth.deactivated'));
+        }
+
+        event(new UserLoggedIn($user));
+
+        // If only allowed one session at a time
+        if (config('access.users.single_login')) {
+            resolve(UserSessionRepository::class)->clearSessionExceptCurrent($user);
+        }
+        
+        return response()->json(['success' => true, 'message' => 'success you are login']);
+    }
     /**
      * Log the user out of the application.
      *
