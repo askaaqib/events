@@ -58,10 +58,11 @@
 
 
                         @foreach ($bookings as $booking)
+                        <?php //dd($booking->events); ?>
                             <tr>
-                                <td>{{ $booking->customer_name }}</td>
+                                <td>{{ $booking->users->first_name }} {{ $booking->users->last_name }}</td>
                                 <td>{{ $booking->venues->venue_name }}</td>
-                                <td>{{ $booking->event_name }}</td>
+                                <td>{{ $booking->events->event_name }}</td>
                                 <td>{!! $booking->book_date !!}</td>
                                 <td>{!! $booking->students_count !!}</td>
                                 <td>{!! $booking->gender !!}</td>

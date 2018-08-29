@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Venues;
 
-class VenueContoller extends Controller
+class VenuesController extends Controller
 {
 
     /**
@@ -137,6 +137,7 @@ class VenueContoller extends Controller
      */
     public function destroy($id)
     {
+        echo 'coming here';
         $venues = Venues::find($id);
         $venues->delete();
 

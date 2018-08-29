@@ -9,7 +9,7 @@
         {{ session('data.message') }}
     </div>
 @endif
-{{ html()->modelForm($venues, 'PATCH', route('admin.update'))->class('form-horizontal')->open() }}
+{{ html()->modelForm($venues, 'PATCH', route('admin.venues.update'))->class('form-horizontal')->open() }}
         <input type="hidden" name="id" value="{{$venues->id}}">
         <div class="card">
             <div class="card-body">

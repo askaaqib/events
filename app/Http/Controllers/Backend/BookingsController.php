@@ -10,8 +10,8 @@ class BookingsController extends Controller
 {
     public function index(){
 
-    	$bookings = Bookings::paginate();
-
+    	$bookings = Bookings::with('venues','events','users')->paginate();
+    	
     	return view('backend.bookings.index', compact('bookings'));
     }
 
