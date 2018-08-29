@@ -100,6 +100,11 @@ $('.venues').click(function(){
 
 
 function getCalendar(datas, forwards=null){
+	$.ajaxSetup({
+	  headers: {
+	    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+	  }
+	});
 
 	$.ajax({
 		headers: {
@@ -204,18 +209,23 @@ function getCalendar(datas, forwards=null){
 $(document).on('click', '.main_dates', function(){
 	
 	var current_date = moment().date();
-	var selected_date = $(this).children().first().text();
+	var current_month = moment().month() + 1;
+	var current_year = moment().year();
+	var selected_date = parseInt($(this).children().first().text());
 	var selected_month = $('#month').text();
-	var selected_year = $('#year').text();
+	var number_selected_month = All_month.indexOf(selected_month) + 1;
+	var selected_year = parseInt($('#year').text());
 	var remaining = parseInt($(this).children().eq(2).text());
 	var booked = $(this).children().eq(4).text() == '' ? 0:parseInt($(this).children().eq(4).text());
+	var number_month = All_month.indexOf(selected_month) < 10 ? '0'+All_month.indexOf(selected_month) : All_month.indexOf(selected_month);
+	var selected_full_date = selected_year + '-' + number_month + '-' + selected_date;
 
-
+console.log(current_date, selected_date, selected_month, selected_year, remaining, booked)
 	if(selected_date == current_date){
 		swal('OOps','Event Already Started Please Select Future Dates',  'error')
-	}else if(selected_date < current_date){
+	}else if(selected_date < current_date && number_selected_month <= current_month &&  selected_year == current_year){
 		swal('Back Dates Not Allowed','Please Select Future Dates',  'error')
-	}else if(selected_date> current_date){
+	}else{
 		console.log(remaining, booked)
 		var total = remaining + booked;
 
@@ -240,8 +250,7 @@ $(document).on('click', '.main_dates', function(){
 		//         return false;
 		// 	}
 
-			var number_month = All_month.indexOf(selected_month) < 10 ? '0'+All_month.indexOf(selected_month) : All_month.indexOf(selected_month);
-			var selected_full_date = selected_year + '-' + number_month + '-' + selected_date;
+			
 			$('#selected_date').val(selected_full_date)
 		// 	$('#students_count').val(studentsCount);
 		//   	if (studentsCount) {
@@ -272,11 +281,11 @@ $(document).on('click', '.main_dates', function(){
 			  confirmButtonText: 'ok',
 			  showLoaderOnConfirm: true,
 			  preConfirm: (studentsCount) => {
-			  	console.log(studentsCount, total )
+			  	studentsCount = studentsCount?parseInt(studentsCount):''
 			  	if (studentsCount === "") {
 					throw new Error("You need to type in your Students Count for Reservation!")
 			        return false;
-				}else if(studentsCount > total){
+				}else if(studentsCount > remaining){
 					throw new Error("Total Should Not be Greater Than Venue Capacity OF " + total );
 			        return false;
 				}else{
@@ -294,16 +303,10 @@ $(document).on('click', '.main_dates', function(){
 										<button class="btn btn-primary btn-custs-reg-login register" id="register">New User</button>
 									</div>
 								</div>
-									`)
-				
-				 // $.ajax({
-		   //          type: 'GET', 
-		   //          url : "/event-register", 
-		   //          success : function (data) {
-		   //          	console.log(data)
-		   //              $("#tab1").html(data);
-		   //          }
-		   //      });
+									`);
+			var studentsCount = $("#students_count").val();
+			$("#students_count_reservation").val(studentsCount);
+
 		   $("html, body").animate({ scrollTop: $(document).height() }, 1000);
 			  }).catch(error => {
 			        swal({
@@ -454,6 +457,25 @@ $(document).on('submit', 'form.form_id', function(e){
 	    		$("#logged-in").html(div);
 	    		$('.login-succes').addClass('d-none');
 	    		$('#logged-in').addClass('alert-success');
+	    		fetch('/check-bookings')
+	    		.then(res => res.json())
+				.then(response => {
+					if(!response.success){
+						fetch('/get-reservation')
+						.then(res => res.text())
+						.then(text => {
+							$("#get-reservation").html(text);
+							var studentsCount = $("#students_count").val();
+							$("#students_count_reservation").val(studentsCount);
+							$('#students_count_reservation').prop('readonly', true);
+						})
+					}else if(response.success && response.data.status == 1){
+
+					}else{
+
+					}
+				})
+				.catch(error => console.error('Error:', error));
 	    	}else{
 	    		$('.login-succes').removeClass('d-none');
 	    		$('.login-succes').removeClass('alert-success', 'd-none');

@@ -25,11 +25,11 @@
                                     {{ html()->label(__('validation.attributes.frontend.gender'))->for('gender') }}
                                 
                                     <div class="form-control">
-                                        {{ html()->checkbox('gender', false, 'males')->name('gender[]')   }}
+                                        {{ html()->radio('gender', false, 'males')->name('gender')   }}
                                         {{ html()->label(__('validation.attributes.frontend.males')) }}
-                                        {{ html()->checkbox('gender', false, 'females')->name('gender[]') }}
+                                        {{ html()->radio('gender', false, 'females')->name('gender') }}
                                         {{ html()->label(__('validation.attributes.frontend.females')) }}
-                                        {{ html()->checkbox('gender', false, 'mix')->name('gender[]')     }}
+                                        {{ html()->radio('gender', false, 'mix')->name('gender')     }}
                                         {{ html()->label(__('validation.attributes.frontend.mix')) }}                                   
                                     </div>     
                                 </div><!--form-group-->
@@ -90,7 +90,12 @@
                                     {{ html()->label(__('validation.attributes.frontend.students_name_list'))->for('students_name_list') }}
 
                                     {{ html()->file('students_name_list')
-                                        ->class('form-control') }}
+                                        ->class('form-control filestyle') }}
+                                </div><!--form-group-->
+                                <div class="form-group">
+                                    {{ html()->label('--OR--')->for('get-doc') }}
+
+                                   <a href="/get-doc" >Download FORM</a>
                                 </div><!--form-group-->
                             </div><!--col-->
                         </div><!--row-->                      
