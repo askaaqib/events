@@ -8,7 +8,7 @@
                 </div><!--card-header-->
 
                 <div class="card-body">
-                    {{ html()->form()->id('form_reservation')->class('form_reservation')->open() }}
+                    {{ html()->form('POST', url('book/reservation'))->id('form_reservation')->class('form_reservation')->open() }}
                         <div class="row">
                             <div class="col-12 col-md-12">
                                 <div class="form-group">

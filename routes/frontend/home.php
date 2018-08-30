@@ -11,6 +11,7 @@ Route::post('contact/send', 'ContactController@send')->name('contact.send');
 Route::get('check-bookings', 'HomeController@checkBookings')->name('check-bookings');
 Route::get('get-reservation', 'HomeController@getReservation')->name('get-reservation');
 Route::get('get-doc', 'HomeController@downloadForm')->name('get-doc');
+Route::post('book/reservation', 'HomeController@makeReservation');
 
 //Route::get('get-reservation', 'HomeController@submitReservation')->name('get-reservation');
 /*

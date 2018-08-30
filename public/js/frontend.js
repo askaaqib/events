@@ -76471,6 +76471,13 @@ $('.venues').click(function () {
 	$("html, body").animate({ scrollTop: heights }, 1000);
 });
 
+String.prototype.toArabic = function () {
+	var id = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+	return this.replace(/[0-9]/g, function (w) {
+		return id[+w];
+	});
+};
+
 function getCalendar(datas) {
 	var forwards = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
@@ -76514,7 +76521,7 @@ function getCalendar(datas) {
 					classes = '';
 				}
 				var capacity = Month == default_month ? current_date < i ? res[0].capacity : '' : current_date <= i ? res[0].capacity : '';
-				month_calendar += '<div class="main_dates calendar_div ' + classes + '"><span clas="date' + i + '">' + i + '</span>\n\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t<span id="seats' + i + '">' + capacity + '</span>\n\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t<span  id="booked' + i + '"></span></div>';
+				month_calendar += '<div class="main_dates calendar_div ' + classes + '"><span clas="date' + i + '">' + i + '</span>&nbsp;&nbsp;' + i.toString().toArabic() + '\n\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t<span id="seats' + i + '">' + capacity + '</span>\n\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t<span  id="booked' + i + '"></span></div>';
 			}
 
 			if (res.length > 0) {
@@ -76637,13 +76644,16 @@ $(document).on('click', '.main_dates', function () {
 				}
 			}
 		}).then(function (result) {
-			$('#students_count').val(result.value);
-			$('.log_reg').removeClass('d-none');
-			$('#tab1').html('<div class="login-register">\n\t\t\t\t\t\t\t\t\t<div class="child-login-register">\n\t\t\t\t\t\t\t\t\t\t<button class="btn btn-primary btn-custs-reg-login login" id="login">Login</button>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class="child-login-register">\n\t\t\t\t\t\t\t\t\t\t<button class="btn btn-primary btn-custs-reg-login register" id="register">New User</button>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t');
-			var studentsCount = $("#students_count").val();
-			$("#students_count_reservation").val(studentsCount);
+			if (result.value) {
 
-			$("html, body").animate({ scrollTop: $(document).height() }, 1000);
+				$('#students_count').val(result.value);
+				$('.log_reg').removeClass('d-none');
+				$('#tab1').html('<div class="login-register">\n\t\t\t\t\t\t\t\t\t<div class="child-login-register">\n\t\t\t\t\t\t\t\t\t\t<button class="btn btn-primary btn-custs-reg-login login" id="login">Login</button>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class="child-login-register">\n\t\t\t\t\t\t\t\t\t\t<button class="btn btn-primary btn-custs-reg-login register" id="register">New User</button>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t');
+				var studentsCount = $("#students_count").val();
+				$("#students_count_reservation").val(studentsCount);
+
+				$("html, body").animate({ scrollTop: $(document).height() }, 1000);
+			}
 		}).catch(function (error) {
 			swal({
 				type: 'error',
@@ -76655,35 +76665,21 @@ $(document).on('click', '.main_dates', function () {
 
 $(document).on('click', '#login', function () {
 	$('.forms_click').removeClass('d-none');
+	var check_already_login = is_logged_in();
+	if (check_already_login.success) {
+		var div = '<div class="logged-in">\n\t\t\t\t\t\t' + check_already_login.message + '\n\t    \t\t\t</div>';
+		$("#logged-in").html(div);
+		getReservation();
+		$("html, body").animate({ scrollTop: $(document).height() }, 1000);
+		return false;
+	}
 	$.ajax({
 		type: 'GET',
 		url: "/event-login",
 		success: function success(data) {
 
 			if (data.success) {
-				console.log($("#logged-in"));
-				// var div = `<div class="logged-in">
-				// 	${data.message}
-				// 		  </div>`
-				// $("#logged-in").html(div);
-
-				fetch('/check-bookings').then(function (res) {
-					return res.json();
-				}).then(function (response) {
-					if (!response.success) {
-						fetch('/get-reservation').then(function (res) {
-							return res.text();
-						}).then(function (text) {
-							$("#get-reservation").html(text);
-							var studentsCount = $("#students_count").val();
-							console.log(studentsCount);
-							$("#students_count_reservation").val(studentsCount);
-							$('#students_count_reservation').prop('readonly', true);
-						});
-					} else if (response.success && response.data.status == 1) {} else {}
-				}).catch(function (error) {
-					return console.error('Error:', error);
-				});
+				getReservation();
 			} else {
 				$("#logged-in").html(data);
 			}
@@ -76780,22 +76776,7 @@ $(document).on('submit', 'form.form_id', function (e) {
 				$("#logged-in").html(div);
 				$('.login-succes').addClass('d-none');
 				$('#logged-in').addClass('alert-success');
-				fetch('/check-bookings').then(function (res) {
-					return res.json();
-				}).then(function (response) {
-					if (!response.success) {
-						fetch('/get-reservation').then(function (res) {
-							return res.text();
-						}).then(function (text) {
-							$("#get-reservation").html(text);
-							var studentsCount = $("#students_count").val();
-							$("#students_count_reservation").val(studentsCount);
-							$('#students_count_reservation').prop('readonly', true);
-						});
-					} else if (response.success && response.data.status == 1) {} else {}
-				}).catch(function (error) {
-					return console.error('Error:', error);
-				});
+				getReservation();
 			} else {
 				$('.login-succes').removeClass('d-none');
 				$('.login-succes').removeClass('alert-success', 'd-none');
@@ -76838,9 +76819,23 @@ function is_logged_in() {
 
 function getReservation() {
 
-	fetch('/get-reservation').then(function (res) {
-		return res.value;
-	}).then(function (response) {});
+	fetch('/check-bookings').then(function (res) {
+		return res.json();
+	}).then(function (response) {
+		if (!response.success) {
+			fetch('/get-reservation').then(function (res) {
+				return res.text();
+			}).then(function (text) {
+				$("#get-reservation").html(text);
+				var studentsCount = $("#students_count").val();
+				console.log(studentsCount);
+				$("#students_count_reservation").val(studentsCount);
+				$('#students_count_reservation').prop('disabled', true);
+			});
+		} else if (response.success && response.data.status == 1) {} else {}
+	}).catch(function (error) {
+		return console.error('Error:', error);
+	});
 }
 
 $(document).on('click', '#btn_make_reservation', function () {
@@ -76854,8 +76849,22 @@ $(document).on('click', '#cancel_reservation', function () {
 });
 
 $(document).on('click', '#submit_reservation', function () {
-	$('#form_reservation').submit();
-	e.preventDefault();
+
+	var data = $('#form_reservation').serializeArray();
+
+	fetch('/book/reservation', {
+		method: 'POST',
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		},
+		body: JSON.stringify(data)
+	}).then(function (res) {
+		return res.json();
+	}).then(function (data) {
+		return console.log(data);
+	}).catch(function (err) {
+		return console.log(err);
+	});
 });
 
 $(document).on('change', '#students_count', function () {

@@ -8,6 +8,7 @@ use App\Venues;
 use App\Bookings;
 use Auth;
 use DB;
+use validator;
 use Carbon\Carbon;
 /**
  * Class HomeController.
@@ -77,6 +78,23 @@ class HomeController extends Controller
         'Content-Type: image/png',
     );
     return response()->download(storage_path() . '/parser.docx', 'final.docx', $headers);
+   }
+
+   public function makeReservation(Request $request){
+var_dump($request->all());
+exit;
+       $valid = validator($request->all(), [
+        'students_count_reservation' => 'required|number',
+        'gender' => 'required|string',
+        'days_of_work' => 'required|string',
+    ]);
+
+    if ($valid->fails()) {
+        $jsonError=response()->json($valid->errors()->all(), 400);
+        return \Response::json($jsonError);
+    }
+
+     
    }
 
 }

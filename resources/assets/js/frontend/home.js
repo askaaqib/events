@@ -10,6 +10,7 @@ var currentYear = moment().year();
 //Get year on calendar
 
 
+
 //Check what if select previous month
 $(document).on('click','.left_bar', function(){
 	var month = $('#month').html();
@@ -98,6 +99,13 @@ $('.venues').click(function(){
 })
 
 
+String.prototype.toArabic= function(){
+ var id= ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+ return this.replace(/[0-9]/g, function(w){
+  return id[+w]
+ });
+}
+
 
 function getCalendar(datas, forwards=null){
 	$.ajaxSetup({
@@ -143,7 +151,7 @@ function getCalendar(datas, forwards=null){
             		classes = '';
             	}
 	            var capacity =  Month == default_month ? current_date < i ? res[0].capacity : ''  : current_date <= i ? res[0].capacity : '';
-				month_calendar    += `<div class="main_dates calendar_div ${classes}"><span clas="date${i}">${i}</span>
+				month_calendar    += `<div class="main_dates calendar_div ${classes}"><span clas="date${i}">${i}</span>&nbsp;&nbsp;${i.toString().toArabic()}
 										<br>
 										<span id="seats${i}">${capacity}</span>
 										<br>
@@ -293,6 +301,8 @@ console.log(current_date, selected_date, selected_month, selected_year, remainin
 				}
 				}
 			}).then((result) => {
+				if(result.value){
+
 				$('#students_count').val(result.value)
 				$('.log_reg').removeClass('d-none')
 				$('#tab1').html(`<div class="login-register">
@@ -304,10 +314,11 @@ console.log(current_date, selected_date, selected_month, selected_year, remainin
 									</div>
 								</div>
 									`);
-			var studentsCount = $("#students_count").val();
-			$("#students_count_reservation").val(studentsCount);
+				var studentsCount = $("#students_count").val();
+				$("#students_count_reservation").val(studentsCount);
 
-		   $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+			   $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+		   	}
 			  }).catch(error => {
 			        swal({
 			        	type : 'error',
@@ -321,38 +332,24 @@ console.log(current_date, selected_date, selected_month, selected_year, remainin
 
 $(document).on('click', '#login', function(){
 	$('.forms_click').removeClass('d-none')
+	var check_already_login = is_logged_in()
+	if(check_already_login.success){
+   		var div = `<div class="logged-in">
+						${check_already_login.message}
+	    			</div>`
+	    	$("#logged-in").html(div);
+	    	getReservation()
+	$("html, body").animate({ scrollTop: $(document).height() }, 1000);
+	return false;
+
+	}
 		$.ajax({
 	    type: 'GET', 
 	    url : "/event-login", 
 	    success : function (data) {
 
 	    	if(data.success){
-	    		console.log($("#logged-in"))
-	    		// var div = `<div class="logged-in">
-							// 	${data.message}
-	    		// 		  </div>`
-	    		// $("#logged-in").html(div);
-	    		
-	    		fetch('/check-bookings')
-	    		.then(res => res.json())
-				.then(response => {
-					if(!response.success){
-						fetch('/get-reservation')
-						.then(res => res.text())
-						.then(text => {
-							$("#get-reservation").html(text);
-							var studentsCount = $("#students_count").val();
-							console.log(studentsCount);
-							$("#students_count_reservation").val(studentsCount);
-							$('#students_count_reservation').prop('readonly', true);
-						})
-					}else if(response.success && response.data.status == 1){
-
-					}else{
-
-					}
-				})
-				.catch(error => console.error('Error:', error));
+	    		getReservation()
 	    	}else{
 	    		$("#logged-in").html(data);
 	    	}
@@ -457,25 +454,7 @@ $(document).on('submit', 'form.form_id', function(e){
 	    		$("#logged-in").html(div);
 	    		$('.login-succes').addClass('d-none');
 	    		$('#logged-in').addClass('alert-success');
-	    		fetch('/check-bookings')
-	    		.then(res => res.json())
-				.then(response => {
-					if(!response.success){
-						fetch('/get-reservation')
-						.then(res => res.text())
-						.then(text => {
-							$("#get-reservation").html(text);
-							var studentsCount = $("#students_count").val();
-							$("#students_count_reservation").val(studentsCount);
-							$('#students_count_reservation').prop('readonly', true);
-						})
-					}else if(response.success && response.data.status == 1){
-
-					}else{
-
-					}
-				})
-				.catch(error => console.error('Error:', error));
+	    		getReservation()
 	    	}else{
 	    		$('.login-succes').removeClass('d-none');
 	    		$('.login-succes').removeClass('alert-success', 'd-none');
@@ -520,13 +499,26 @@ console.log(res)
 
 function getReservation(){
 
-	
-
-	fetch('/get-reservation')
-	.then(res => res.value)
+	fetch('/check-bookings')
+	.then(res => res.json())
 	.then(response => {
+		if(!response.success){
+			fetch('/get-reservation')
+			.then(res => res.text())
+			.then(text => {
+				$("#get-reservation").html(text);
+				var studentsCount = $("#students_count").val();
+				console.log(studentsCount);
+				$("#students_count_reservation").val(studentsCount);
+				$('#students_count_reservation').prop('disabled', true);
+			})
+		}else if(response.success && response.data.status == 1){
 
+		}else{
+
+		}
 	})
+	.catch(error => console.error('Error:', error));
 }
 
 $(document).on('click','#btn_make_reservation', function(){
@@ -541,10 +533,22 @@ $(document).on('click','#cancel_reservation',function(){
 })
 
 $(document).on('click','#submit_reservation',function(){
-	$('#form_reservation').submit();
-	e.preventDefault();
+
+	let data = $('#form_reservation').serializeArray();
+
+    fetch('/book/reservation', {
+        method: 'POST',
+        headers : {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        body:JSON.stringify(data)
+    }).then((res) => res.json())
+    .then((data) =>  console.log(data))
+    .catch((err)=>console.log(err))
+
 })
 
 $(document).on('change','#students_count', function() {
    alert('value changed');
 });
+
