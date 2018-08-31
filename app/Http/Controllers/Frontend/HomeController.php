@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Venues;
+use App\Events;
 use App\Bookings;
 use Auth;
 use DB;
@@ -81,20 +82,47 @@ class HomeController extends Controller
    }
 
    public function makeReservation(Request $request){
-var_dump($request->all());
-exit;
+       //var_dump($request->file()); 
        $valid = validator($request->all(), [
-        'students_count_reservation' => 'required|number',
-        'gender' => 'required|string',
-        'days_of_work' => 'required|string',
+        'students_count_reservation' => 'required',
+        'gender' => 'required',
+        'special_needs' => 'required',
+        'need_food' => 'required',
+        'students_grade' => 'required',
+        'students_name_list' => 'required|mimes:doc,docx,pdf,xls,xlsx',
     ]);
 
     if ($valid->fails()) {
         $jsonError=response()->json($valid->errors()->all(), 400);
         return \Response::json($jsonError);
     }
+    else{
+      $bookings = new Bookings();
+      $event_id = Events::where('venues_id', $request->reservation_venue_id)->value('id');
+      $bookings->event_id = $event_id;
+      $bookings->customer_id = auth()->user()->id;
+      $bookings->students_count = $request->students_count_reservation;
+      $bookings->gender = $request->gender;
+      $bookings->special_needs = $request->special_needs;
+      $bookings->need_food_meal = $request->need_food;
+      $bookings->students_grade = json_encode($request->students_grade);
+      $bookings->venue_id = $request->reservation_venue_id;
+      $students_file = $request->students_name_list;
+      $students_file_name = rand(0,9999). $students_file->getClientOriginalName();
+      $bookings->file_uploads = $students_file_name ;
+      
+      $students_file->move(public_path('uploads'),$students_file_name);
 
-     
+      if($bookings->save()){
+          return response()->json(["success" => true, "message"=> "Reservation Successfull"]);
+
+      }else{
+          return response()->json(["success" => false, "message"=> "Error, Please Try Again"]);
+      }
    }
+  }
 
+  public function ReservationSuccess(){
+    return view('frontend.reservationsuccess');
+  }
 }

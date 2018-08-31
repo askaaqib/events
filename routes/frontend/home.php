@@ -12,7 +12,7 @@ Route::get('check-bookings', 'HomeController@checkBookings')->name('check-bookin
 Route::get('get-reservation', 'HomeController@getReservation')->name('get-reservation');
 Route::get('get-doc', 'HomeController@downloadForm')->name('get-doc');
 Route::post('book/reservation', 'HomeController@makeReservation');
-
+Route::get('reservation-success', 'HomeController@ReservationSuccess')->name('reservation-success');
 //Route::get('get-reservation', 'HomeController@submitReservation')->name('get-reservation');
 /*
  * These frontend controllers require the user to be logged in

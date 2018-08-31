@@ -51,6 +51,7 @@
                             <th>{{ __('labels.backend.bookings.need_food_meal') }}</th>
                             <th>{{ __('labels.backend.bookings.students_grade') }}</th>
                             <th>{{ __('labels.backend.bookings.file_upload') }}</th>
+                            <th>{{ __('labels.backend.bookings.status') }}</th>
                             <th>{{ __('labels.general.actions') }}</th>
                         </tr>
                         </thead>
@@ -58,22 +59,27 @@
 
 
                         @foreach ($bookings as $booking)
-                        <?php //dd($booking->events); ?>
+                        <?php //dd($booking->events->event_name); ?>
                             <tr>
-                                <td>{{ $booking->users->first_name }} {{ $booking->users->last_name }}</td>
-                                <td>{{ $booking->venues->venue_name }}</td>
-                                <td>{{ $booking->events->event_name }}</td>
+                                <td>{!! $booking->users->first_name !!} {{ $booking->users->last_name }}</td>
+                                <td>{!! $booking->venues->venue_name !!}</td>
+                                <td>{!! $booking->events->event_name !!}</td>
                                 <td>{!! $booking->book_date !!}</td>
                                 <td>{!! $booking->students_count !!}</td>
                                 <td>{!! $booking->gender !!}</td>
                                 <td>{!! $booking->special_needs !!}</td>
                                 <td>{!! $booking->need_food_meal !!}</td>
                                 <td>{!! $booking->students_grade !!}</td>
-                                <td>{!! $booking->file_upload !!}</td>
+                                <td><a href="/uploads/{!! $booking->file_uploads !!}">{!! $booking->file_uploads !!}</a></td>
+                                <td>
+                                    <?php if($booking->status == 1){ echo 'Approved';} else {?>
+                                    <a href="{{url('admin/bookings/updatestatus', $booking->id)}}" onclick="return confirm('Are you sure you want to Approve Status?');" data-placement="top" title="" class="btn btn-info" data-original-title="edit">Approve</a>
+                                    <?php }?>
+                                </td>
                                 <td>
                                 <div class="btn-group" role="group" aria-label="User Actions">
-                                    <a href="{{url('admin/bookings/edit', $booking->id)}}" data-toggle="tooltip" data-placement="top" title="" class="btn btn-info" data-original-title="edit"><i class="far fa-edit"></i> </a>
-                                    <a href="{{url('admin/bookings/destroy', $booking->id)}}" data-toggle="tooltip" data-placement="top" title="" class="btn btn-danger" data-original-title="delete"><i class="far fa-trash-alt"></i> </a>
+                                    {{-- <a href="{{url('admin/bookings/edit', $booking->id)}}" data-toggle="tooltip" data-placement="top" title="" class="btn btn-info" data-original-title="edit"><i class="far fa-edit"></i> </a> --}}
+                                    <a href="{{url('admin/bookings/destroy', $booking->id)}}"  onclick="return confirm('Are you sure you want to delete?');" data-toggle="tooltip" data-placement="top" title="" class="btn btn-danger" data-original-title="delete"><i class="far fa-trash-alt"></i> </a>
                                 </div>
                                 </td>
                             </tr>
