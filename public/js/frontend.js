@@ -78106,7 +78106,7 @@ function getCalendar(datas) {
 		data: datas,
 		url: '/booking/calendarDates',
 		success: function success(data) {
-			var res = data;
+			var res = data.bookings;
 			var check = moment(datas.date).format('YYYY-MM-DD');
 			var Month = moment(datas.date).month() + 1;
 
@@ -78131,7 +78131,7 @@ function getCalendar(datas) {
 				} else {
 					classes = '';
 				}
-				var capacity = Month == default_month ? current_date < i ? res[0].capacity : '' : current_date <= i ? res[0].capacity : '';
+				var capacity = Month == default_month ? current_date < i ? data.capacity : '' : current_date <= i ? data.capacity : '';
 				month_calendar += '<div class="main_dates calendar_div ' + classes + '"><span clas="date' + i + '">' + i + '</span>&nbsp;&nbsp;' + i.toString().toArabic() + '\n\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t<span id="seats' + i + '">' + capacity + '</span>\n\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t<span  id="booked' + i + '"></span></div>';
 			}
 

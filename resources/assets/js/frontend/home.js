@@ -123,7 +123,7 @@ function getCalendar(datas, forwards=null){
 		data : datas,
 		url : '/booking/calendarDates',
 		success : function(data){
-			var res = data
+			var res = data.bookings
 			var check = moment(datas.date).format('YYYY-MM-DD')
            	var Month = moment(datas.date).month() + 1;
 
@@ -151,8 +151,8 @@ function getCalendar(datas, forwards=null){
             	}else{
             		classes = '';
             	}
-	            var capacity =  Month == default_month ? current_date < i ? res[0].capacity : ''  : current_date <= i ? res[0].capacity : '';
-				month_calendar    += `<div class="main_dates calendar_div ${classes}"><span clas="date${i}">${i}</span>&nbsp;&nbsp;${i.toString().toArabic()}
+	            var capacity =  Month == default_month ? current_date < i ? data.capacity : ''  : current_date <= i ? data.capacity : '';
+	            month_calendar    += `<div class="main_dates calendar_div ${classes}"><span clas="date${i}">${i}</span>&nbsp;&nbsp;${i.toString().toArabic()}
 										<br>
 										<span id="seats${i}">${capacity}</span>
 										<br>

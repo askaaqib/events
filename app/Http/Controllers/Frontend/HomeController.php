@@ -41,9 +41,10 @@ class HomeController extends Controller
    					->leftJoin('venues', 'venues.id', '=', 'bookings.venue_id')
    					->groupBy('book_date')
    					->get();
+    $getVenue = Venues::where('id',$request->id)->value('capacity');        
    	// SELECT sum(students_count), date(book_date) FROM `bookings` where  Group by book_date
-
-   	return response()->json($getbookings);
+    $data = array('capacity' => $getVenue, 'bookings' => $getbookings);
+   	return response()->json($data);
    }
 
    public function checkBookings(Request $request){
