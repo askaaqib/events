@@ -81,8 +81,7 @@ class HomeController extends Controller
    }
 
    public function makeReservation(Request $request){
-var_dump($request->all());
-exit;
+    
        $valid = validator($request->all(), [
         'students_count_reservation' => 'required|number',
         'gender' => 'required|string',
