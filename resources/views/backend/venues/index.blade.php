@@ -59,8 +59,8 @@
                                 <td>{!! $venue->active !!}</td>
                                 <td>
             <div class="btn-group" role="group" aria-label="User Actions">
-                <a href="{{url('admin/venues/edit', $venue->id)}}" data-toggle="tooltip" data-placement="top" title="" class="btn btn-info" data-original-title="edit"><i class="far fa-edit"></i> </a>
-                <a href="{{url('admin/venues/destroy', $venue->id)}}"  onclick="return confirm('Are you sure you want to delete?');" data-toggle="tooltip" data-placement="top" title="" class="btn btn-danger" data-original-title="delete"><i class="far fa-trash-alt"></i> </a>
+                <a href="{{route('admin.venues.edit', $venue->id)}}" data-toggle="tooltip" data-placement="top" title="" class="btn btn-info" data-original-title="edit"><i class="far fa-edit"></i> </a>
+                <a href="{{route('admin.venues.destroy', $venue->id)}}"  onclick="return confirm('Are you sure you want to delete?');" data-toggle="tooltip" data-placement="top" title="" class="btn btn-danger" data-original-title="delete"><i class="far fa-trash-alt"></i> </a>
             </div>
             </td>
                             </tr>

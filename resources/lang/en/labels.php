@@ -153,6 +153,7 @@ return [
             'students_grade' => 'Students Grade',
             'file_upload' => 'Uploads',
             'studens_count' => 'Students Count',
+            'status'        => 'Status',
 
         ]
     ],

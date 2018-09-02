@@ -1,6 +1,7 @@
 var $ = require('jquery');
 var moment = require('moment');
 const swal = require('sweetalert2');
+require('jquery-validation');
 //Get All months of Year
 var All_month = moment.monthsShort();
 //Get Current Month in number
@@ -122,7 +123,7 @@ function getCalendar(datas, forwards=null){
 		data : datas,
 		url : '/booking/calendarDates',
 		success : function(data){
-			var res = data
+			var res = data.bookings
 			var check = moment(datas.date).format('YYYY-MM-DD')
            	var Month = moment(datas.date).month() + 1;
 
@@ -150,8 +151,8 @@ function getCalendar(datas, forwards=null){
             	}else{
             		classes = '';
             	}
-	            var capacity =  Month == default_month ? current_date < i ? res[0].capacity : ''  : current_date <= i ? res[0].capacity : '';
-				month_calendar    += `<div class="main_dates calendar_div ${classes}"><span clas="date${i}">${i}</span>&nbsp;&nbsp;${i.toString().toArabic()}
+	            var capacity =  Month == default_month ? current_date < i ? data.capacity : ''  : current_date <= i ? data.capacity : '';
+	            month_calendar    += `<div class="main_dates calendar_div ${classes}"><span clas="date${i}">${i}</span>&nbsp;&nbsp;${i.toString().toArabic()}
 										<br>
 										<span id="seats${i}">${capacity}</span>
 										<br>
@@ -492,8 +493,7 @@ function is_logged_in(){
 	    }
 	});
 console.log(res)
-	return res;
-		
+	return res;		
 }
 
 
@@ -503,25 +503,16 @@ function getReservation(){
 	.then(res => res.json())
 	.then(response => {
 		if(!response.success){
-			fetch('/get-reservation')
-			.then(res => res.text())
-			.then(text => {
-				$("#get-reservation").html(text);
-				var studentsCount = $("#students_count").val();
-				console.log(studentsCount);
-				$("#students_count_reservation").val(studentsCount);
-				$('#students_count_reservation').prop('disabled', true);
-			})
-		}else if(response.success && response.data.status == 1){
-
+			getReservationForm()
 		}else{
-
+			$("#get-reservation").html("<span>You Have Already Reserved For Event and is Pending Approval</span>");			
 		}
 	})
 	.catch(error => console.error('Error:', error));
 }
 
 $(document).on('click','#btn_make_reservation', function(){
+	
 	$('#terms_overlay').removeClass('d-none');
 	$('.terms_conditions').removeClass('d-none');
 
@@ -533,22 +524,58 @@ $(document).on('click','#cancel_reservation',function(){
 })
 
 $(document).on('click','#submit_reservation',function(){
-
-	let data = $('#form_reservation').serializeArray();
-
-    fetch('/book/reservation', {
-        method: 'POST',
-        headers : {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        body:JSON.stringify(data)
-    }).then((res) => res.json())
-    .then((data) =>  console.log(data))
-    .catch((err)=>console.log(err))
-
+	$('#reservation_venue_id').val($('#current_venue').val());	
+	//console.log($('#current_venue').val(),$('#reservation_venue_id').val())
+	$('#form_reservation').submit();	
 })
 
 $(document).on('change','#students_count', function() {
    alert('value changed');
 });
 
+$(document).on('submit','#form_reservation', function(e) {
+	
+	$.ajaxSetup({
+	  headers: {
+	    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+	  }
+	});
+	var data = $(this).serializeArray();
+	$.ajax({
+		type: 'post',		
+		data : new FormData($('#form_reservation')[0]),
+		processData: false,
+        contentType: false,
+		url : '/book/reservation',
+		success : function(response){
+			console.log(response.original);
+			var error = '';
+			if(response.original){
+				$.each(response.original, function(index, item){
+				error += item + ' <br> ';
+			})
+			$('.reservation-error').removeClass('d-none');	
+			$('.reservation-error').addClass('alert-danger');	
+			$('.reservation-error').html(error);
+			$('#terms_overlay').addClass('d-none');
+			$('.terms_conditions').addClass('d-none');		
+			}
+			if(response.success){
+				window.location = '/reservation-success';
+			}		
+		 }
+	})	
+	e.preventDefault();
+ })
+
+function getReservationForm(){
+	fetch('/get-reservation')
+	.then(res => res.text())
+	.then(text => {
+		$("#get-reservation").html(text);
+		var studentsCount = $("#students_count").val();
+		console.log(studentsCount);
+		$("#students_count_reservation").val(studentsCount);
+		//$('#students_count_reservation').prop('disabled', true);
+	})
+}

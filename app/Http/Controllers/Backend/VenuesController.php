@@ -137,7 +137,7 @@ class VenuesController extends Controller
      */
     public function destroy($id)
     {
-        echo 'coming here';
+        
         $venues = Venues::find($id);
         $venues->delete();
 
