@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Venues;
+use Illuminate\Validation\Validator;
 
 class VenuesController extends Controller
 {
@@ -45,14 +46,14 @@ class VenuesController extends Controller
         //
         $request->validate([
             'venue_name' => 'required|unique:venues|max:255',
-            'capacity' => 'required',
+            'capacity' => 'required|numeric',
             'days_of_work' => 'required',
         ]);
 
         $venues = new Venues();
         $venues->venue_name = $request->venue_name;
         $venues->capacity = $request->capacity;
-        $venues->days_of_work = $request->days_of_work;
+        $venues->days_of_work = base64_encode(serialize($request->days_of_work));
         $venues->address = $request->address;
         $venues->active = $request->active;
         
@@ -107,14 +108,14 @@ class VenuesController extends Controller
         //
          $request->validate([
             'venue_name' => 'required | max:255',
-            'capacity' => 'required',
+            'capacity' => 'required|numeric',
             'days_of_work' => 'required',
         ]);
 
         $venues = Venues::find($request->id);
         $venues->venue_name = $request->venue_name;
         $venues->capacity = $request->capacity;
-        $venues->days_of_work = $request->days_of_work;
+        $venues->days_of_work = base64_encode(serialize($request->days_of_work));
         $venues->address = $request->address;
         $venues->active = $request->active ?  $request->active : 0;
         

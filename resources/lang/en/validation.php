@@ -199,6 +199,23 @@ return [
                 'active'            => 'Active',
                 'capacity'          => 'Capacity',
 
+            ],
+            'excludeDates'=> [
+                'venue_name'        => 'Venue Name',
+                'events_name'       => 'Event Name',
+                'start_date'        => 'Start Date',
+                'end_date'          => 'End Date',
+                'active'            => 'Active',
+                'reason'          => 'Reason',
+
+            ],
+            'riseCapacity'=> [
+                'event_name'       => 'Event Name',
+                'start_date'        => 'Start Date',
+                'end_date'          => 'End Date',
+                'active'            => 'Active',
+                'capacity'          => 'Rise Capacity',
+
             ]
         ],
 

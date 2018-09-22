@@ -1004,6 +1004,9 @@ class ParagonIE_Sodium_Compat
         if (self::use_fallback('crypto_box_keypair')) {
             return (string) call_user_func('\\Sodium\\crypto_box_keypair');
         }
+        if (PHP_INT_SIZE === 4) {
+            return ParagonIE_Sodium_Crypto32::box_keypair();
+        }
         return ParagonIE_Sodium_Crypto::box_keypair();
     }
 
@@ -1587,10 +1590,23 @@ class ParagonIE_Sodium_Compat
         ParagonIE_Sodium_Core_Util::declareScalarType($memlimit, 'int', 5);
 
         if (self::useNewSodiumAPI()) {
-            return (string) sodium_crypto_pwhash_scryptsalsa208sha256($outlen, $passwd, $salt, $opslimit, $memlimit);
+            return (string) sodium_crypto_pwhash_scryptsalsa208sha256(
+                (int) $outlen,
+                (string) $passwd,
+                (string) $salt,
+                (int) $opslimit,
+                (int) $memlimit
+            );
         }
         if (self::use_fallback('crypto_pwhash_scryptsalsa208sha256')) {
-            return (string) call_user_func('\\Sodium\\crypto_pwhash_scryptsalsa208sha256', $outlen, $passwd, $salt, $opslimit, $memlimit);
+            return (string) call_user_func(
+                '\\Sodium\\crypto_pwhash_scryptsalsa208sha256',
+                (int) $outlen,
+                (string) $passwd,
+                (string) $salt,
+                (int) $opslimit,
+                (int) $memlimit
+            );
         }
         // This is the best we can do.
         throw new SodiumException(
@@ -1632,10 +1648,19 @@ class ParagonIE_Sodium_Compat
         ParagonIE_Sodium_Core_Util::declareScalarType($memlimit, 'int', 3);
 
         if (self::useNewSodiumAPI()) {
-            return (string) sodium_crypto_pwhash_scryptsalsa208sha256_str($passwd, $opslimit, $memlimit);
+            return (string) sodium_crypto_pwhash_scryptsalsa208sha256_str(
+                (string) $passwd,
+                (int) $opslimit,
+                (int) $memlimit
+            );
         }
         if (self::use_fallback('crypto_pwhash_scryptsalsa208sha256_str')) {
-            return (string) call_user_func('\\Sodium\\crypto_pwhash_scryptsalsa208sha256_str', $passwd, $opslimit, $memlimit);
+            return (string) call_user_func(
+                '\\Sodium\\crypto_pwhash_scryptsalsa208sha256_str',
+                (string) $passwd,
+                (int) $opslimit,
+                (int) $memlimit
+            );
         }
         // This is the best we can do.
         throw new SodiumException(
@@ -1656,10 +1681,17 @@ class ParagonIE_Sodium_Compat
         ParagonIE_Sodium_Core_Util::declareScalarType($hash, 'string', 2);
 
         if (self::useNewSodiumAPI()) {
-            return (bool) sodium_crypto_pwhash_scryptsalsa208sha256_str_verify($passwd, $hash);
+            return (bool) sodium_crypto_pwhash_scryptsalsa208sha256_str_verify(
+                (string) $passwd,
+                (string) $hash
+            );
         }
         if (self::use_fallback('crypto_pwhash_scryptsalsa208sha256_str_verify')) {
-            return (bool) call_user_func('\\Sodium\\crypto_pwhash_scryptsalsa208sha256_str_verify', $passwd, $hash);
+            return (bool) call_user_func(
+                '\\Sodium\\crypto_pwhash_scryptsalsa208sha256_str_verify',
+                (string) $passwd,
+                (string) $hash
+            );
         }
         // This is the best we can do.
         throw new SodiumException(
@@ -2463,7 +2495,8 @@ class ParagonIE_Sodium_Compat
             return;
         }
         if (self::use_fallback('increment')) {
-            @call_user_func('\\Sodium\\increment', $var);
+            $func = '\\Sodium\\increment';
+            $func($var);
             return;
         }
 
@@ -2563,8 +2596,11 @@ class ParagonIE_Sodium_Compat
             return;
         }
         if (self::use_fallback('memzero')) {
-            @call_user_func('\\Sodium\\memzero', $var);
-            return;
+            $func = '\\Sodium\\memzero';
+            $func($var);
+            if ($var === null) {
+                return;
+            }
         }
         // This is the best we can do.
         throw new SodiumException(

@@ -8,7 +8,8 @@ var All_month = moment.monthsShort();
 var currentMonth = moment().month();
 //Get current Year
 var currentYear = moment().year();
-//Get year on calendar
+//Get date 
+var currentDate = moment().format('YYYY-MM-DD');
 
 
 
@@ -88,12 +89,14 @@ $(document).on('click','.right_bar', function(){
 });
 
 $('.venues').click(function(){
-
+    
 	//set state for current venue
 	var venue_id  = $(this).attr('id');
 	var cur_date = moment().format('YYYY-MM-DD');
 	var data = {id : venue_id, date: cur_date};
 	$('#current_venue').val(venue_id)
+	
+
 	getCalendar(data,true);
 	var heights = $(document).height()-500
 	$("html, body").animate({ scrollTop: heights }, 1000);
@@ -123,93 +126,218 @@ function getCalendar(datas, forwards=null){
 		data : datas,
 		url : '/booking/calendarDates',
 		success : function(data){
+			
 			var res = data.bookings
 			var check = moment(datas.date).format('YYYY-MM-DD')
            	var Month = moment(datas.date).month() + 1;
-
-
             var Year = moment(datas.date).year();
             var days = moment(datas.date).daysInMonth();
-
             var default_month = moment().month() + 1;
+            var exc_dates =  getExcludeDates();
+			var month_calendar = '';
+			var venue_selected = $('#current_venue').val();
+			var from_date;
+			var to_date;
+			var rise_capacity = getRiseCapacity();
 
-            if(default_month == Month){
+			if(default_month == Month){
 	            var current_date = moment().date()
 	        }else{
 	        	var current_date = moment(datas.date).date();
-	        }
-			var month_calendar = '';
+	        }	
+				if(exc_dates){
+					exc_dates.forEach(function(item){
+						if(venue_selected == item.venues_id){
+							from_date = item.from_date;
+							to_date = item.to_date;
+						}
+					}) 
+				}
 
-			
+				var Month_In_Alphabets = moment(datas.date).format('MMM');
 
-			var Month_In_Alphabets = moment(datas.date).format('MMM');
+				 	
+				var j=0;
+	            for(var i=1; i<=days ;  i++){
+	            	if(default_month == Month){
+		            	var classes = current_date > i ? 'greystyle' : '';
+		            	classes = current_date == i ? 'greenstyle' : classes;
+	            	}else{
+	            		classes = '';
+	            	}
+	            	var checkerz = moment(Year+'-'+Month+'-'+i).format('YYYY-MM-DD')
+	            	var capacity =  Month == default_month ? current_date < i ? data.capacity : ''  : current_date <= i ? data.capacity : '';
+	            	if(checkerz >= from_date && checkerz <= to_date ){
+	            		month_calendar += `<div class="calendar_div ${classes}"><span clas="date${i}">${i}</span>&nbsp;&nbsp;${i.toString().toArabic()}
+											<br>
+											<span>Not Allowed</span>
+											<br>
+											</div>`
+	            	}else{
+	            		month_calendar += `<div class="main_dates calendar_div ${classes}"><span clas="date${i}">${i}</span>&nbsp;&nbsp;${i.toString().toArabic()}
+											<br>
+											<span id="seats${i}">${capacity}</span>
+											<br>
+											<span  id="booked${i}"></span></div>`
+					}
+				}
 
-            for(i=1; i<=days ;  i++){
-            	if(default_month == Month){
-	            	var classes = current_date > i ? 'greystyle' : '';
-	            	classes = current_date == i ? 'greenstyle' : classes;
-            	}else{
-            		classes = '';
-            	}
-	            var capacity =  Month == default_month ? current_date < i ? data.capacity : ''  : current_date <= i ? data.capacity : '';
-	            month_calendar    += `<div class="main_dates calendar_div ${classes}"><span clas="date${i}">${i}</span>&nbsp;&nbsp;${i.toString().toArabic()}
-										<br>
-										<span id="seats${i}">${capacity}</span>
-										<br>
-										<span  id="booked${i}"></span></div>`
-			}
 
-			if(res.length > 0){
 
-				// res.forEach(function(element){
-				$('#calendar').remove();
-				$('#parent_calendar').append(`<div id="calendar"><div class="calendar_Date">
-                    <div class="left_bar"><i class="fas fa-angle-left"></i></div>        
-                    <div id="month_year"><span id="month">${Month_In_Alphabets}</span> &nbsp;&nbsp; <span id="year">${Year}</span></div> 
-                    <div class="right_bar"><i class="fas fa-angle-right"></i></div>
-                </div>
-                <div class="card-body">
-                    <div class="calendar col-md-12">
-                        ${month_calendar}
-                    </div>
-                </div>
-               </div>`);
 
-			// })
-			//console.log(res)
+				if(res.length > 0){
 
-			 res.forEach(function(el){
-            	var res_month = moment(el.book_date).month() + 1
-            	var res_day = moment(el.book_date).date()
-            	var res_year = moment(el.book_date).year()
-            	var seats = el.capacity
+					// res.forEach(function(element){
+					$('#calendar').remove();
+					$('#parent_calendar').append(`<div id="calendar"><div class="calendar_Date">
+	                    <div class="left_bar"><i class="fas fa-angle-left"></i></div>        
+	                    <div id="month_year"><span id="month">${Month_In_Alphabets}</span> &nbsp;&nbsp; <span id="year">${Year}</span></div> 
+	                    <div class="right_bar"><i class="fas fa-angle-right"></i></div>
+	                </div>
+	                <div class="card-body">
+	                    <div class="calendar col-md-12">
+	                        ${month_calendar}
+	                    </div>
+	                </div>
+	               </div>`);
 
-            	if(res_month == Month && res_year == Year){
-            		if(res_day >= current_date){
-            			seats = el.capacity - el.seats;
-            			$('#seats'+res_day).text(seats)
-            			$('#booked'+res_day).text(el.seats)
-            			$('#seats'+res_day).addClass('seats_left');
-            			$('#booked'+res_day).addClass('booked');
-            		}
-            	}
+					// })
+					//console.log(res)
 
-            })
+				 	res.forEach(function(el){
+		           	 	var res_month = moment(el.book_date).month() + 1
+		            	var res_day = moment(el.book_date).date()
+		            	var res_year = moment(el.book_date).year()
+		            	var seats = el.capacity
 
-			}else{
-				$('#calendar').remove();
-				$('#parent_calendar').append(`<div id="calendar"><div class="calendar_Date">
-                    <div class="left_bar"><i class="fas fa-angle-left"></i></div>        
-                    <div id="month_year"><span id="month">${Month_In_Alphabets}</span> &nbsp;&nbsp; <span id="year">${Year}</span></div> 
-                    <div class="right_bar"><i class="fas fa-angle-right"></i></div>
-                </div>
-                <div class="card-body">
-                    <div class="calendar col-md-12">
-                        ${month_calendar}
-                    </div>
-                </div>
-               </div>`);
-			}
+		            	if(res_month == Month && res_year == Year){
+		            		if(res_day > current_date){
+		            			seats = el.capacity - el.seats;
+		            			$('#seats'+res_day).text(seats)
+		            			$('#booked'+res_day).text(el.seats)
+		            			$('#seats'+res_day).addClass('seats_left');
+		            			$('#booked'+res_day).addClass('booked');
+		            		}
+		            	}
+	            	})
+
+
+
+				}else{
+					$('#calendar').remove();
+					$('#parent_calendar').append(`<div id="calendar"><div class="calendar_Date">
+	                    <div class="left_bar"><i class="fas fa-angle-left"></i></div>        
+	                    <div id="month_year"><span id="month">${Month_In_Alphabets}</span> &nbsp;&nbsp; <span id="year">${Year}</span></div> 
+	                    <div class="right_bar"><i class="fas fa-angle-right"></i></div>
+	                </div>
+	                <div class="card-body">
+	                    <div class="calendar col-md-12">
+	                        ${month_calendar}
+	                    </div>
+	                </div>
+	               </div>`);
+				}	
+
+					if(rise_capacity.length >0){
+	        			rise_capacity.forEach(function(item,index){
+	        				
+	        				from_date = item.from_date;
+							to_date = item.to_date;
+
+							var start = moment(from_date, "YYYY-MM-DD");
+							var end = moment(to_date, "YYYY-MM-DD");
+							var selected_month = $('#month').text();
+
+							//standing means the month on the calendar or choosen by user
+							var standing_year =  $('#year').text();
+							var standing_month = moment().month(selected_month).format("M");
+							var standing_month_date = standing_year + '-' + standing_month;
+							//var standing_days_in_month = moment(standing_month_date).daysInMonth();
+							var check_standing_year = parseInt(moment(standing_month_date).format('YYYY')); //
+							var check_to_year = parseInt(moment(item.to_date).format('YYYY')) 	; //
+
+							//Difference in number of days
+							var diff_date = moment.duration(end.diff(start)).asDays();
+							var check_year = moment(from_date).isSame(to_date, 'year'); // 
+
+							var check_month = moment(from_date).isSame(to_date, 'month'); // 
+							if(check_year && check_month && All_month[moment().month()] == selected_month && check_standing_year <= check_to_year){
+								var starting = moment(from_date).date() > moment().date() ? moment(from_date).date() : moment().date() + 1 ;
+							}else{
+								
+								if(All_month[moment().month()] == selected_month && check_standing_year <= check_to_year){
+									var starting = moment(from_date).date();
+								}else{
+
+									
+									// standing_month_date = standing_month_date + '-' + standing_days_in_month;
+
+									// var diff_from_standing = moment(new Date(standing_month_date)).diff(new Date(from_date), 'months', true);
+									// var diff_current_todate = moment(new Date(standing_month_date)).diff(new Date(to_date), 'months', true);
+									// var month_diff = moment(new Date(to_date)).diff(new Date(from_date), 'months', true);
+									var standing_monthly = moment(standing_month_date).format('YYYY-MM');
+									var to_monthly = moment(item.to_date).format('YYYY-MM');
+									var starting = 1;
+									if(standing_monthly<=to_monthly && check_standing_year <= check_to_year){
+										var days_in_month = moment(from_date).daysInMonth();
+										var cur_day = moment(from_date).date()
+										var remaining_days = days_in_month - cur_day;
+										if(standing_monthly == to_monthly)
+											diff_date = moment(item.to_date).date() - 1 ;
+										else
+											diff_date = diff_date - remaining_days -1
+									}else{
+
+									}
+									
+								}
+							}
+
+							for (var i = 0; i <= diff_date; i++) {
+								var check_remaining = $('#seats'+starting).hasClass('seats_left')
+
+								if(check_year && check_month && All_month[moment().month()] == selected_month && check_standing_year <= check_to_year){
+									if(check_remaining){
+										var final_capacity = parseInt(item.rise_capacity - $('#booked'+starting).text());
+										$('#seats'+starting).text(final_capacity)
+									}else{
+										$('#seats'+starting).text(item.rise_capacity)
+									}
+									
+								}else{
+									var selected_month = $('#month').text();
+									if(All_month[moment().month()] == selected_month && check_standing_year <= check_to_year){
+										if(check_remaining){
+											var final_capacity = parseInt(item.rise_capacity - $('#booked'+starting).text());
+											$('#seats'+starting).text(final_capacity)
+										}else{
+											$('#seats'+starting).text(item.rise_capacity)
+										}
+									}else{
+										if(standing_monthly<=to_monthly && check_standing_year <= check_to_year){
+											if(check_remaining){
+												var final_capacity = parseInt(item.rise_capacity - $('#booked'+starting).text());
+												$('#seats'+starting).text(final_capacity)
+											}else{
+												$('#seats'+starting).text(item.rise_capacity)
+											}
+										}	
+									}
+								}
+
+								starting++
+							}
+
+	        			})
+	        			// if(checkerz >= rise_capacity.data[j].from_date && 
+	        			// 	checkerz <= rise_capacity.data[j].to_date && 
+	        			// 	rise_capacity.data[j].from_date != moment().format('YYYY-MM-DD')){
+
+	        			// 	capacity = rise_capacity.data[j].rise_capacity;
+	        			// 	j++;
+	        			// }
+	        		}		 
+			 
 		}
 	})
 }
@@ -229,13 +357,12 @@ $(document).on('click', '.main_dates', function(){
 	var number_month = All_month.indexOf(selected_month) < 10 ? '0'+All_month.indexOf(selected_month) : All_month.indexOf(selected_month);
 	var selected_full_date = selected_year + '-' + number_month + '-' + selected_date;
 
-console.log(current_date, selected_date, selected_month, selected_year, remaining, booked)
+
 	if(selected_date == current_date){
 		swal('OOps','Event Already Started Please Select Future Dates',  'error')
 	}else if(selected_date < current_date && number_selected_month <= current_month &&  selected_year == current_year){
 		swal('Back Dates Not Allowed','Please Select Future Dates',  'error')
 	}else{
-		console.log(remaining, booked)
 		var total = remaining + booked;
 
 		// swal.mixin({
@@ -427,7 +554,6 @@ $(document).on('submit', 'form.form_register', function(e){
 	    	// 	$('.login-succes').html(data.message).show()
 	    	// 	//$("#logged-in").html(data);
 	    	// }
-	    	console.log(data)
 	 	// $("#logged-in").html(data);
 		// $("html, body").animate({ scrollTop: $(document).height() }, 1000);
 		$("html, body").animate({ scrollTop: $(document).height() }, 1000);
@@ -448,7 +574,6 @@ $(document).on('submit', 'form.form_id', function(e){
 	    data: $( this ).serializeArray() ,
 	    success : function (data) {
 	    	if(data.success){
-	    		console.log($("#logged-in"))
 	    		var div = `<div class="logged-in">
 								${data.message}
 	    				  </div>`
@@ -482,17 +607,16 @@ fetch('/check-bookings').then(res => res.json())
 
 
 function is_logged_in(){
-	res = new Array();
-	$.ajax({
-	    type: 'GET', 
-	    async: false,
-	    url : "/is-logged-in", 
-	    success : function (data) {
-	    	res = data;
-	    	
-	    }
-	});
-console.log(res)
+	var res = new Array();
+		$.ajax({
+		    type: 'GET', 
+		    async: false,
+		    url : "/is-logged-in", 
+		    success : function (data) {
+		    	res = data;
+		    	
+		    }
+		});
 	return res;		
 }
 
@@ -548,7 +672,6 @@ $(document).on('submit','#form_reservation', function(e) {
         contentType: false,
 		url : '/book/reservation',
 		success : function(response){
-			console.log(response.original);
 			var error = '';
 			if(response.original){
 				$.each(response.original, function(index, item){
@@ -574,8 +697,56 @@ function getReservationForm(){
 	.then(text => {
 		$("#get-reservation").html(text);
 		var studentsCount = $("#students_count").val();
-		console.log(studentsCount);
 		$("#students_count_reservation").val(studentsCount);
 		//$('#students_count_reservation').prop('disabled', true);
 	})
+}
+
+// async function getExcludeDates(){
+	 
+// 	var data = await getdates()
+
+// 	return data;
+// }
+
+
+// function getdates(){
+
+// 	 return new Promise(resolve => {
+// 		fetch('/get-exclude-dates')
+// 		.then(res => res.json())
+// 		.then(res => {
+// 			var datas = res;
+// 			resolve(datas.data);
+// 			//$('#students_count_reservation').prop('disabled', true);
+// 		});
+//   });
+// }
+
+function getExcludeDates(){
+	var res = new Array();
+		$.ajax({
+		    type: 'POST', 
+		    async: false,
+		    data: {venue_id: $('#current_venue').val()},
+		    url : "/get-exclude-dates", 
+		    success : function (data) {
+		    	res = data;
+		    }
+		});
+	return res.data;		
+}
+
+function getRiseCapacity(){
+	var res = new Array();
+		$.ajax({
+		    type: 'POST', 
+		    async: false,
+		    data: {venue_id: $('#current_venue').val()},
+		    url : "/get-rise-capacity", 
+		    success : function (data) {
+		    	res = data;
+		    }
+		});
+	return res.data;		
 }

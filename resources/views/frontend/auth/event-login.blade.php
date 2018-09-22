@@ -14,7 +14,7 @@
                                 <div class="form-group">
                                     {{ html()->label(__('validation.attributes.frontend.email'))->for('email') }}
 
-                                    {{ html()->email('email')
+                                    {{ html()->text('mobile')
                                         ->class('form-control')
                                         ->placeholder(__('validation.attributes.frontend.email'))
                                         ->attribute('maxlength', 191)

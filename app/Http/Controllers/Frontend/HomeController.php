@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use App\Venues;
 use App\Events;
 use App\Bookings;
@@ -11,6 +12,8 @@ use Auth;
 use DB;
 use validator;
 use Carbon\Carbon;
+use App\ExcludeDate;
+use App\RiseCapacity;
 /**
  * Class HomeController.
  */
@@ -83,11 +86,9 @@ class HomeController extends Controller
    }
 
    public function makeReservation(Request $request){
-<<<<<<< HEAD
-    
-=======
+
        //var_dump($request->file()); 
->>>>>>> 4a51fd1a064330c7dd54493448d479c276cc2467
+
        $valid = validator($request->all(), [
         'students_count_reservation' => 'required',
         'gender' => 'required',
@@ -130,4 +131,61 @@ class HomeController extends Controller
   public function ReservationSuccess(){
     return view('frontend.reservationsuccess');
   }
+
+  public function getExcludeDates(Request $request){
+    $data = ExcludeDate::where('active', 1)
+            ->where('venues_id', $request->venue_id)
+            ->get()->toArray();
+    $collection = collect($data);
+
+    $data =  $collection->map(function ($dates) {
+        return [
+          'from_date' => $dates['from_date'], 
+          'to_date' => $dates['to_date'],
+          'venues_id' => $dates['venues_id'],
+      ];
+    });
+     if(count($data) > 0){
+      $response_data = array(
+        'success' => true,
+        'data' => $data
+      );
+    }else{
+      $response_data = array(
+        'success' => false,
+        'data' => ''
+      );
+    }
+    return response()->json($response_data);
+
+  }
+
+public function getRiseCapacity(Request $request){
+    $data = DB::select(DB::raw('SELECT * from rise_capacity LEFT JOIN events on events.id = rise_capacity.events_id where rise_capacity.active = 1 AND events.venues_id ='.$request->venue_id));
+
+    // $collection = collect($data);
+
+    // $data =  $collection->map(function ($dates) {
+    //     return [
+    //       'from_date' => $dates['from_date'], 
+    //       'to_date' => $dates['to_date'],
+    //       'events_id' => $dates['events_id'],
+    //       'rise_capacity' => $dates['rise_capacity'],
+    //   ];
+    // });
+     if(count($data) > 0){
+      $response_data = array(
+        'success' => true,
+        'data' => $data
+      );
+    }else{
+      $response_data = array(
+        'success' => false,
+        'data' => ''
+      );
+    }
+    return response()->json($response_data);
+
+  }
+
 }

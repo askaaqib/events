@@ -72,7 +72,7 @@
 
                             <div class="col-md-10">
                                 <label class="switch switch-3d switch-primary">
-                                    {{ html()->checkbox('active', true, '1')->class('switch-input') }}
+                                    {{ html()->checkbox('active', $events->active == '1' ? true : false, '1')->class('switch-input') }}
                                     <span class="switch-label"></span>
                                     <span class="switch-handle"></span>
                                 </label>

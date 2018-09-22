@@ -50,19 +50,28 @@
                         </tr>
                         </thead>
                         <tbody>
+
                         @foreach ($venues as $venue)
                             <tr>
                                 <td>{{ $venue->venue_name }}</td>
                                 <td>{{ $venue->capacity }}</td>
-                                <td>{{ $venue->days_of_work }}</td>
+                                <td>
+                                @php 
+                                    $days_work = unserialize(base64_decode($venue->days_of_work));
+                                @endphp   
+                                    @foreach($days_work as $work_days)
+                                        <span class="badge badge-secondary">{{$work_days}}</span>
+                                    @endforeach
+
+                                </td>
                                 <td>{{ $venue->address }}</td>
                                 <td>{!! $venue->active !!}</td>
                                 <td>
-            <div class="btn-group" role="group" aria-label="User Actions">
-                <a href="{{route('admin.venues.edit', $venue->id)}}" data-toggle="tooltip" data-placement="top" title="" class="btn btn-info" data-original-title="edit"><i class="far fa-edit"></i> </a>
-                <a href="{{route('admin.venues.destroy', $venue->id)}}"  onclick="return confirm('Are you sure you want to delete?');" data-toggle="tooltip" data-placement="top" title="" class="btn btn-danger" data-original-title="delete"><i class="far fa-trash-alt"></i> </a>
-            </div>
-            </td>
+                                <div class="btn-group" role="group" aria-label="User Actions">
+                                    <a href="{{route('admin.venues.edit', $venue->id)}}" data-toggle="tooltip" data-placement="top" title="" class="btn btn-info" data-original-title="edit"><i class="far fa-edit"></i> </a>
+                                    <a href="{{route('admin.venues.destroy', $venue->id)}}"  onclick="return confirm('Are you sure you want to delete?');" data-toggle="tooltip" data-placement="top" title="" class="btn btn-danger" data-original-title="delete"><i class="far fa-trash-alt"></i> </a>
+                                </div>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>

@@ -17,7 +17,6 @@ class EventsController extends Controller
     public function index()
     {
         //
-
         $events = Events::with('venues')->paginate();
 
         return view('backend.events.index', compact('events'));

@@ -53,12 +53,61 @@
                         <div class="form-group row">
                             {{ html()->label(__('validation.attributes.backend.venues.days_of_work'))->class('col-md-2 form-control-label')->for('days_of_work') }}
 
-                            <div class="col-md-10">
-                                {{ html()->text('days_of_work')
-                                    ->class('form-control')
-                                    ->placeholder(__('validation.attributes.backend.venues.days_of_work'))
-                                    ->attribute('maxlength', 191)
-                                    ->required() }}
+                            <div class="col-md-1">
+                                Saturday
+                                <label class="switch switch-3d switch-primary">
+                                    {{ html()->checkbox('days_of_work[]', true, 'saturday')->class('switch-input') }}
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                            </div><!--col-->
+                            <div class="col-md-1">
+                                Sunday
+                                <label class="switch switch-3d switch-primary">
+                                    {{ html()->checkbox('days_of_work[]', true, 'sunday')->class('switch-input') }}
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                            </div><!--col-->
+                            <div class="col-md-1">
+                                Monday
+                                <label class="switch switch-3d switch-primary">
+                                    {{ html()->checkbox('days_of_work[]', true, 'monday')->class('switch-input') }}
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                            </div><!--col-->
+                            <div class="col-md-1">
+                                Tuesday
+                                <label class="switch switch-3d switch-primary">
+                                    {{ html()->checkbox('days_of_work[]', true, 'tuesday')->class('switch-input') }}
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                            </div><!--col-->
+                            <div class="col-md-1">
+                                Wednessday
+                                <label class="switch switch-3d switch-primary">
+                                    {{ html()->checkbox('days_of_work[]', true, 'wednessday')->class('switch-input') }}
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                            </div><!--col-->
+                            <div class="col-md-1">
+                                Thursday
+                                <label class="switch switch-3d switch-primary">
+                                    {{ html()->checkbox('days_of_work[]', true, 'thursday')->class('switch-input') }}
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                            </div><!--col-->
+                            <div class="col-md-1">
+                                Friday
+                                <label class="switch switch-3d switch-primary">
+                                    {{ html()->checkbox('days_of_work[]', true, 'friday')->class('switch-input') }}
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
                             </div><!--col-->
                         </div><!--form-group-->
 
@@ -72,7 +121,7 @@
                                     }}
                             </div><!--col-->
                         </div><!--form-group-->
-
+                        <input type="hidden" name="days_of_work[]" id="days_of_work">
 
                         <div class="form-group row">
                             {{ html()->label(__('validation.attributes.backend.venues.active'))->class('col-md-2 form-control-label')->for('active') }}

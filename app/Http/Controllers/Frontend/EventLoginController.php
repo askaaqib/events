@@ -11,7 +11,7 @@ use Redirect;
 use Session;
 use Validator;
 use Illuminate\Support\Facades\Input;
-use App\Helpers\Auth\Auth;
+use Auth;
 use App\Helpers\Frontend\Auth\Socialite;
 use App\Events\Frontend\Auth\UserLoggedIn;
 use App\Events\Frontend\Auth\UserLoggedOut;
@@ -119,7 +119,7 @@ class EventLoginController extends Controller
 
 
         $rules = array (
-                'email' => 'required|email',
+                'mobile' => 'required',
                 'password' => 'required|max:255' 
         );
 
@@ -130,15 +130,15 @@ class EventLoginController extends Controller
             return response()->json(['success', false, 'errors'=>$validator->errors()]);
         } else {
             $Credentials = array (
-                'email' => $request->get('email'),
+                'mobileNumber' => $request->get('mobile'),
                 'password' => $request->get('password') ,
                 'active' => 1,
                 'confirmed' => 1
             );
 
             if (Auth::attempt($Credentials)) {
-                $save_email = array('email' => $request->get('email'));
-                session ($save_email);
+                $save_mobile = array('mobile' => $request->get('mobile'));
+                session ($save_mobile);
                 return response()->json(['success' => true, 'message' => "Successfully Logged In"]);
             } else {
                 return response()->json(['success'=> false, 'message' => "Invalid Credentials , Please try again."]);

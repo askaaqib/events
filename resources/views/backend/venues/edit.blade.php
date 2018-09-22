@@ -53,14 +53,26 @@
 
                         <div class="form-group row">
                             {{ html()->label(__('validation.attributes.backend.venues.days_of_work'))->class('col-md-2 form-control-label')->for('days_of_work') }}
-
-                            <div class="col-md-10">
-                                {{ html()->text('days_of_work')
-                                    ->class('form-control')
-                                    ->placeholder(__('validation.attributes.backend.venues.days_of_work'))
-                                    ->attribute('maxlength', 191)
-                                    ->required() }}
+                            @php 
+                                $const = ['saturday', 'sunday', 'monday', 'tuesday', 'wednessday', 'thursday', 'friday'];
+                                $days_work = unserialize(base64_decode($venues->days_of_work));
+                                $res = $venues->array_sub_sort($days_work, $const);
+                                 // dd($res);
+                                $i=0;
+                            @endphp 
+                            @foreach($res as $key => $work_days)           
+                            <div class="col-md-1">
+                                {{$key}}
+                                @if($key == 'friday')
+                                    <br>
+                                @endif
+                                <label class="switch switch-3d switch-primary">
+                                    {{ html()->checkbox('days_of_work[]', $work_days == '0' ? false : true, $work_days  )->class('switch-input') }}
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
                             </div><!--col-->
+                            @endforeach
                         </div><!--form-group-->
 
                         <div class="form-group row">

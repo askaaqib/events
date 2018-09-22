@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "await": "^0.2.6",
-    "jquery-validation": "^1.17.0",
+    "jquery-validation": "^1.18.0",
     "moment": "^2.22.2",
     "nodemon": "^1.18.3"
   }
