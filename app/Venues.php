@@ -25,7 +25,7 @@ class Venues extends Model
     			$arr[$value] =$value;
     			$status = 0;
     		}else{
-    			$arr[$value] = 0;
+    			$arr[$value] = '';
     		}
     	}
 			

@@ -139,7 +139,8 @@ function getCalendar(datas, forwards=null){
 			var from_date;
 			var to_date;
 			var rise_capacity = getRiseCapacity();
-
+			var get_work_days = getWorkDays();
+			
 			if(default_month == Month){
 	            var current_date = moment().date()
 	        }else{
@@ -158,6 +159,7 @@ function getCalendar(datas, forwards=null){
 
 				 	
 				var j=0;
+				var days_status = 0;
 	            for(var i=1; i<=days ;  i++){
 	            	if(default_month == Month){
 		            	var classes = current_date > i ? 'greystyle' : '';
@@ -167,18 +169,41 @@ function getCalendar(datas, forwards=null){
 	            	}
 	            	var checkerz = moment(Year+'-'+Month+'-'+i).format('YYYY-MM-DD')
 	            	var capacity =  Month == default_month ? current_date < i ? data.capacity : ''  : current_date <= i ? data.capacity : '';
-	            	if(checkerz >= from_date && checkerz <= to_date ){
+	            	const weeksInMonth = moment(moment().endOf('month') - moment().startOf('month')).weeks();
+	            	var dayname= moment(Year+'-'+Month+'-'+i).format('dddd');
+	            	if(get_work_days.length > 0){
+	            		for(var nn=0; nn<=get_work_days.length; nn++){
+	            		if(get_work_days[nn] == dayname.toLowerCase()){
+	            			days_status = 1;
+	            			break;
+	            		}
+	            		}		
+	            	}
+	            	
+	            	//console.log(weeksInMonth);
+	            	if(checkerz >= from_date && checkerz <= to_date){
 	            		month_calendar += `<div class="calendar_div ${classes}"><span clas="date${i}">${i}</span>&nbsp;&nbsp;${i.toString().toArabic()}
 											<br>
 											<span>Not Allowed</span>
 											<br>
 											</div>`
-	            	}else{
+	            	}
+	            	else if(days_status == 1 && i > current_date){
+	            		month_calendar += `<div class="calendar_div ${classes}"><span clas="date${i}">${i}</span>&nbsp;&nbsp;${i.toString().toArabic()}
+											<br>
+											<span class="offday_title">OFF DAY</span>
+											<br>
+											<span class="dayname">${dayname}</span>
+											</div>`
+	            		days_status = 0;
+	            	}
+	            	else{
 	            		month_calendar += `<div class="main_dates calendar_div ${classes}"><span clas="date${i}">${i}</span>&nbsp;&nbsp;${i.toString().toArabic()}
 											<br>
 											<span id="seats${i}">${capacity}</span>
 											<br>
-											<span  id="booked${i}"></span></div>`
+											<span  id="booked${i}"></span>
+											<span class="dayname">${dayname}</span></div>`
 					}
 				}
 
@@ -749,4 +774,18 @@ function getRiseCapacity(){
 		    }
 		});
 	return res.data;		
+}
+
+function getWorkDays(){
+	var res = new Array();
+		$.ajax({
+		    type: 'POST', 
+		    async: false,
+		    data: {venue_id: $('#current_venue').val()},
+		    url : "/get-work-days", 
+		    success : function (data) {
+		    	res = data;
+		    }
+		});
+	return res;		
 }

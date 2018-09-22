@@ -63,11 +63,10 @@
                             @foreach($res as $key => $work_days)           
                             <div class="col-md-1">
                                 {{$key}}
-                                @if($key == 'friday')
-                                    <br>
+                                @if($key == 'friday')                                    
                                 @endif
                                 <label class="switch switch-3d switch-primary">
-                                    {{ html()->checkbox('days_of_work[]', $work_days == '0' ? false : true, $work_days  )->class('switch-input') }}
+                                    {{ html()->checkbox('days_of_work[]', $work_days == '' ? false : true, $key  )->class('switch-input') }}
                                     <span class="switch-label"></span>
                                     <span class="switch-handle"></span>
                                 </label>
@@ -106,7 +105,7 @@
             <div class="card-footer clearfix">
                 <div class="row">
                     <div class="col">
-                        {{ form_cancel(route('admin.auth.user.index'), __('buttons.general.cancel')) }}
+                        {{ form_cancel(route('admin.venues.index'), __('buttons.general.cancel')) }}
                     </div><!--col-->
 
                     <div class="col text-right">

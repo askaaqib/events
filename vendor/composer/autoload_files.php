@@ -25,10 +25,10 @@ return array(
     '801c31d8ed748cfa537fa45402288c95' => $vendorDir . '/psy/psysh/src/functions.php',
     'd04e9322f14ab3e66b5b68c6d1e15433' => $vendorDir . '/arcanedev/log-viewer/constants.php',
     '24be6d98d7c305f36699ba4e34b6df3c' => $vendorDir . '/arcanedev/log-viewer/helpers.php',
+    '4a1f389d6ce373bda9e57857d3b61c84' => $vendorDir . '/barryvdh/laravel-debugbar/src/helpers.php',
     'c9b7496aa2e287ba00ff44d2d2a861b1' => $vendorDir . '/hieu-le/active/src/helpers.php',
     'eed9c7469f94573c0d97cc45de79b754' => $vendorDir . '/spatie/laravel-html/src/helpers.php',
     '377b22b161c09ed6e5152de788ca020a' => $vendorDir . '/spatie/laravel-permission/src/helpers.php',
     '1e298922c3e2134d42dcdb03e6d5f55a' => $vendorDir . '/torann/geoip/src/helpers.php',
-    '4a1f389d6ce373bda9e57857d3b61c84' => $vendorDir . '/barryvdh/laravel-debugbar/src/helpers.php',
     '4287f956e84093f0d3b313db1556722f' => $baseDir . '/app/helpers.php',
 );

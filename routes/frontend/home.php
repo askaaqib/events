@@ -12,6 +12,7 @@ Route::get('check-bookings', 'HomeController@checkBookings')->name('check-bookin
 Route::get('get-reservation', 'HomeController@getReservation')->name('get-reservation');
 Route::post('get-exclude-dates', 'HomeController@getExcludeDates')->name('get-exclude-dates');
 Route::post('get-rise-capacity', 'HomeController@getRiseCapacity')->name('get-rise-capacity');
+Route::post('get-work-days', 'HomeController@getWorkDays')->name('get-work-days');
 Route::get('get-doc', 'HomeController@downloadForm')->name('get-doc');
 Route::post('book/reservation', 'HomeController@makeReservation');
 Route::get('reservation-success', 'HomeController@ReservationSuccess')->name('reservation-success');

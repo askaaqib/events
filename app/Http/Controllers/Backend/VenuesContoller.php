@@ -103,7 +103,7 @@ class VenuesContoller extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        
          $request->validate([
             'venue_name' => 'required | max:255',
             'capacity' => 'required',

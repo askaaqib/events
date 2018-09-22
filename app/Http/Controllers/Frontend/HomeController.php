@@ -187,5 +187,11 @@ public function getRiseCapacity(Request $request){
     return response()->json($response_data);
 
   }
-
+public function getWorkDays(Request $request){
+   $venues = Venues::where('id', $request->venue_id)
+            ->pluck('days_of_work');
+   $days_of_work =         unserialize(base64_decode($venues));
+   $days_of_work = array_filter($days_of_work,'strlen');
+   return array_values($days_of_work);         
+}
 }

@@ -11677,11 +11677,11 @@ function isSlowBuffer (obj) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
- * jQuery Validation Plugin v1.18.0
+ * jQuery Validation Plugin v1.17.0
  *
  * https://jqueryvalidation.org/
  *
- * Copyright (c) 2018 Jörn Zaefferer
+ * Copyright (c) 2017 Jörn Zaefferer
  * Released under the MIT license
  */
 (function( factory ) {
@@ -11748,7 +11748,6 @@ $.extend( $.fn, {
 					// Prevent form submit to be able to see console output
 					event.preventDefault();
 				}
-
 				function handle() {
 					var hidden, result;
 
@@ -11764,7 +11763,7 @@ $.extend( $.fn, {
 							.appendTo( validator.currentForm );
 					}
 
-					if ( validator.settings.submitHandler && !validator.settings.debug ) {
+					if ( validator.settings.submitHandler ) {
 						result = validator.settings.submitHandler.call( validator, validator.currentForm, event );
 						if ( hidden ) {
 
@@ -11831,7 +11830,7 @@ $.extend( $.fn, {
 			return;
 		}
 
-		if ( !element.form && element.isContentEditable ) {
+		if ( !element.form && element.hasAttribute( "contenteditable" ) ) {
 			element.form = this.closest( "form" )[ 0 ];
 			element.name = this.attr( "name" );
 		}
@@ -12075,8 +12074,7 @@ $.extend( $.validator, {
 			this.invalid = {};
 			this.reset();
 
-			var currentForm = this.currentForm,
-				groups = ( this.groups = {} ),
+			var groups = ( this.groups = {} ),
 				rules;
 			$.each( this.settings.groups, function( key, value ) {
 				if ( typeof value === "string" ) {
@@ -12094,15 +12092,9 @@ $.extend( $.validator, {
 			function delegate( event ) {
 
 				// Set form expando on contenteditable
-				if ( !this.form && this.isContentEditable ) {
+				if ( !this.form && this.hasAttribute( "contenteditable" ) ) {
 					this.form = $( this ).closest( "form" )[ 0 ];
 					this.name = $( this ).attr( "name" );
-				}
-
-				// Ignore the element if it belongs to another form. This will happen mainly
-				// when setting the `form` attribute of an input to the id of another form.
-				if ( currentForm !== this.form ) {
-					return;
 				}
 
 				var validator = $.data( this.form, "validator" ),
@@ -12333,14 +12325,9 @@ $.extend( $.validator, {
 				}
 
 				// Set form expando on contenteditable
-				if ( this.isContentEditable ) {
+				if ( this.hasAttribute( "contenteditable" ) ) {
 					this.form = $( this ).closest( "form" )[ 0 ];
 					this.name = name;
-				}
-
-				// Ignore elements that belong to other/nested forms
-				if ( this.form !== validator.currentForm ) {
-					return false;
 				}
 
 				// Select only the first element for each name, and only those with rules specified
@@ -12396,7 +12383,7 @@ $.extend( $.validator, {
 				return element.validity.badInput ? "NaN" : $element.val();
 			}
 
-			if ( element.isContentEditable ) {
+			if ( element.hasAttribute( "contenteditable" ) ) {
 				val = $element.text();
 			} else {
 				val = $element.val();
@@ -12456,6 +12443,10 @@ $.extend( $.validator, {
 			// Note that `this` in the normalizer is `element`.
 			if ( normalizer ) {
 				val = normalizer.call( element, val );
+
+				if ( typeof val !== "string" ) {
+					throw new TypeError( "The normalizer should return a string value." );
+				}
 
 				// Delete the normalizer from rules to avoid treating it as a pre-defined method.
 				delete rules.normalizer;
@@ -12832,19 +12823,7 @@ $.extend( $.validator, {
 				.removeData( "validator" )
 				.find( ".validate-equalTo-blur" )
 					.off( ".validate-equalTo" )
-					.removeClass( "validate-equalTo-blur" )
-				.find( ".validate-lessThan-blur" )
-					.off( ".validate-lessThan" )
-					.removeClass( "validate-lessThan-blur" )
-				.find( ".validate-lessThanEqual-blur" )
-					.off( ".validate-lessThanEqual" )
-					.removeClass( "validate-lessThanEqual-blur" )
-				.find( ".validate-greaterThanEqual-blur" )
-					.off( ".validate-greaterThanEqual" )
-					.removeClass( "validate-greaterThanEqual-blur" )
-				.find( ".validate-greaterThan-blur" )
-					.off( ".validate-greaterThan" )
-					.removeClass( "validate-greaterThan-blur" );
+					.removeClass( "validate-equalTo-blur" );
 		}
 
 	},
@@ -12948,12 +12927,6 @@ $.extend( $.validator, {
 
 		for ( method in $.validator.methods ) {
 			value = $element.data( "rule" + method.charAt( 0 ).toUpperCase() + method.substring( 1 ).toLowerCase() );
-
-			// Cast empty attributes like `data-rule-required` to `true`
-			if ( value === "" ) {
-				value = true;
-			}
-
 			this.normalizeAttributeRule( rules, type, method, value );
 		}
 		return rules;
@@ -13079,7 +13052,7 @@ $.extend( $.validator, {
 			if ( this.checkable( element ) ) {
 				return this.getLength( value, element ) > 0;
 			}
-			return value !== undefined && value !== null && value.length > 0;
+			return value.length > 0;
 		},
 
 		// https://jqueryvalidation.org/email-method/
@@ -13103,26 +13076,9 @@ $.extend( $.validator, {
 		},
 
 		// https://jqueryvalidation.org/date-method/
-		date: ( function() {
-			var called = false;
-
-			return function( value, element ) {
-				if ( !called ) {
-					called = true;
-					if ( this.settings.debug && window.console ) {
-						console.warn(
-							"The `date` method is deprecated and will be removed in version '2.0.0'.\n" +
-							"Please don't use it, since it relies on the Date constructor, which\n" +
-							"behaves very differently across browsers and locales. Use `dateISO`\n" +
-							"instead or one of the locale specific methods in `localizations/`\n" +
-							"and `additional-methods.js`."
-						);
-					}
-				}
-
-				return this.optional( element ) || !/Invalid|NaN/.test( new Date( value ).toString() );
-			};
-		}() ),
+		date: function( value, element ) {
+			return this.optional( element ) || !/Invalid|NaN/.test( new Date( value ).toString() );
+		},
 
 		// https://jqueryvalidation.org/dateISO-method/
 		dateISO: function( value, element ) {
@@ -78026,9 +77982,8 @@ module.exports = Component.exports
 /***/ }),
 
 /***/ "./resources/assets/js/frontend/home.js":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
 var $ = __webpack_require__("./node_modules/jquery/dist/jquery.js");
 var moment = __webpack_require__("./node_modules/moment/moment.js");
 var swal = __webpack_require__("./node_modules/sweetalert2/dist/sweetalert2.all.js");
@@ -78165,6 +78120,7 @@ function getCalendar(datas) {
 			var from_date;
 			var to_date;
 			var rise_capacity = getRiseCapacity();
+			var get_work_days = getWorkDays();
 
 			if (default_month == Month) {
 				var current_date = moment().date();
@@ -78183,6 +78139,7 @@ function getCalendar(datas) {
 			var Month_In_Alphabets = moment(datas.date).format('MMM');
 
 			var j = 0;
+			var days_status = 0;
 			for (var i = 1; i <= days; i++) {
 				if (default_month == Month) {
 					var classes = current_date > i ? 'greystyle' : '';
@@ -78192,10 +78149,25 @@ function getCalendar(datas) {
 				}
 				var checkerz = moment(Year + '-' + Month + '-' + i).format('YYYY-MM-DD');
 				var capacity = Month == default_month ? current_date < i ? data.capacity : '' : current_date <= i ? data.capacity : '';
+				var weeksInMonth = moment(moment().endOf('month') - moment().startOf('month')).weeks();
+				var dayname = moment(Year + '-' + Month + '-' + i).format('dddd');
+				if (get_work_days.length > 0) {
+					for (var nn = 0; nn <= get_work_days.length; nn++) {
+						if (get_work_days[nn] == dayname.toLowerCase()) {
+							days_status = 1;
+							break;
+						}
+					}
+				}
+
+				//console.log(weeksInMonth);
 				if (checkerz >= from_date && checkerz <= to_date) {
 					month_calendar += '<div class="calendar_div ' + classes + '"><span clas="date' + i + '">' + i + '</span>&nbsp;&nbsp;' + i.toString().toArabic() + '\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t<span>Not Allowed</span>\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t</div>';
+				} else if (days_status == 1 && i > current_date) {
+					month_calendar += '<div class="calendar_div ' + classes + '"><span clas="date' + i + '">' + i + '</span>&nbsp;&nbsp;' + i.toString().toArabic() + '\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t<span class="offday_title">OFF DAY</span>\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t<span class="dayname">' + dayname + '</span>\n\t\t\t\t\t\t\t\t\t\t\t</div>';
+					days_status = 0;
 				} else {
-					month_calendar += '<div class="main_dates calendar_div ' + classes + '"><span clas="date' + i + '">' + i + '</span>&nbsp;&nbsp;' + i.toString().toArabic() + '\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t<span id="seats' + i + '">' + capacity + '</span>\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t<span  id="booked' + i + '"></span></div>';
+					month_calendar += '<div class="main_dates calendar_div ' + classes + '"><span clas="date' + i + '">' + i + '</span>&nbsp;&nbsp;' + i.toString().toArabic() + '\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t<span id="seats' + i + '">' + capacity + '</span>\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t<span  id="booked' + i + '"></span>\n\t\t\t\t\t\t\t\t\t\t\t<span class="dayname">' + dayname + '</span></div>';
 				}
 			}
 
@@ -78706,6 +78678,20 @@ function getRiseCapacity() {
 		}
 	});
 	return res.data;
+}
+
+function getWorkDays() {
+	var res = new Array();
+	$.ajax({
+		type: 'POST',
+		async: false,
+		data: { venue_id: $('#current_venue').val() },
+		url: "/get-work-days",
+		success: function success(data) {
+			res = data;
+		}
+	});
+	return res;
 }
 
 /***/ }),

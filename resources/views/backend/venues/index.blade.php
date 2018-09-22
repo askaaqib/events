@@ -50,7 +50,7 @@
                         </tr>
                         </thead>
                         <tbody>
-
+                        
                         @foreach ($venues as $venue)
                             <tr>
                                 <td>{{ $venue->venue_name }}</td>
