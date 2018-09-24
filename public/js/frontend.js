@@ -78114,6 +78114,7 @@ function getCalendar(datas) {
 			var Year = moment(datas.date).year();
 			var days = moment(datas.date).daysInMonth();
 			var default_month = moment().month() + 1;
+			var default_year = moment().year();
 			var exc_dates = getExcludeDates();
 			var month_calendar = '';
 			var venue_selected = $('#current_venue').val();
@@ -78122,7 +78123,8 @@ function getCalendar(datas) {
 			var rise_capacity = getRiseCapacity();
 			var get_work_days = getWorkDays();
 
-			if (default_month == Month) {
+			if (default_month == Month && default_year == Year) {
+				console.log(default_year, Year);
 				var current_date = moment().date();
 			} else {
 				var current_date = moment(datas.date).date();
@@ -78141,7 +78143,7 @@ function getCalendar(datas) {
 			var j = 0;
 
 			for (var i = 1; i <= days; i++) {
-				if (default_month == Month) {
+				if (default_month == Month && default_year == Year) {
 					var classes = current_date > i ? 'greystyle' : '';
 					classes = current_date == i ? 'greenstyle' : classes;
 				} else {
@@ -78303,11 +78305,11 @@ function getCalendar(datas) {
 				// For Loop in Days
 				for (var i = 1; i <= days; i++) {
 					//Check if from_date and to_date have same year
-					if (from_date_year == Year && from_date_year == to_date_year) {
+					if (from_date_year == Year || to_date_year == Year) {
 						//Check if from_date and to_date have same month
 						if (from_date_month == to_date_month) {
 							// Check if current month from_date with selected month
-							if (from_date_month == Month) {
+							if (from_date_month == Month && from_date_year == Year) {
 								//console.log(from_date , i ,to_date );
 								if (i >= from_date && i <= to_date && i > current_date) {
 									$('.day_' + i + ' #seats' + i).remove();
@@ -78318,9 +78320,10 @@ function getCalendar(datas) {
 								}
 							}
 						}
-						// 
+						// if from_date and to_date dont have same month
 						else {
-								if (from_date_month == Month) {
+								// when from_date month shows with to_month in next/multiple month
+								if (from_date_month == Month && from_date_year == Year) {
 									if (i > current_date && i >= from_date) {
 										$('.day_' + i + ' #seats' + i).remove();
 										$('.day_' + i + ' .offday_title' + i).remove();
@@ -78328,24 +78331,49 @@ function getCalendar(datas) {
 										$('.day_' + i).click(false);
 										$('.day_' + i).css({ 'cursor': 'not-allowed', 'background': 'red', 'color': 'white' });
 									}
-								} else if (to_date_month == Month) {
-									if (i <= to_date) {
-										$('.day_' + i + ' #seats' + i).remove();
-										$('.day_' + i + ' .offday_title' + i).remove();
-										$('.day_' + i + ' #not_allow' + i).show();
-										$('.day_' + i).click(false);
-										$('.day_' + i).css({ 'cursor': 'not-allowed', 'background': 'red', 'color': 'white' });
-									}
-								} else {
-									if (Month > from_date_month && Month < to_date_month) {
-										$('.day_' + i + ' #seats' + i).remove();
-										$('.day_' + i + ' .offday_title' + i).remove();
-										$('.day_' + i + ' #not_allow' + i).show();
-										$('.day_' + i).click(false);
-										$('.day_' + i).css({ 'cursor': 'not-allowed', 'background': 'red', 'color': 'white' });
-									}
-									//console.log(Month,from_date_month,to_date_month);
 								}
+								// When to_date month shows with from_month in previous month
+								else if (to_date_month == Month && to_date_year == Year) {
+										if (i <= to_date) {
+											$('.day_' + i + ' #seats' + i).remove();
+											$('.day_' + i + ' .offday_title' + i).remove();
+											$('.day_' + i + ' #not_allow' + i).show();
+											$('.day_' + i).click(false);
+											$('.day_' + i).css({ 'cursor': 'not-allowed', 'background': 'red', 'color': 'white' });
+										}
+									}
+									// When from_date and to_date have multipe month difference
+									else {
+											if (from_date_year == to_date_year) {
+												if (from_date_year == Year) {
+													if (Month > from_date_month && Month < to_date_month) {
+														$('.day_' + i + ' #seats' + i).remove();
+														$('.day_' + i + ' .offday_title' + i).remove();
+														$('.day_' + i + ' #not_allow' + i).show();
+														$('.day_' + i).click(false);
+														$('.day_' + i).css({ 'cursor': 'not-allowed', 'background': 'red', 'color': 'white' });
+													}
+												}
+											} else {
+												if (Year == from_date_year) {
+													if (Month > from_date_month) {
+														$('.day_' + i + ' #seats' + i).remove();
+														$('.day_' + i + ' .offday_title' + i).remove();
+														$('.day_' + i + ' #not_allow' + i).show();
+														$('.day_' + i).click(false);
+														$('.day_' + i).css({ 'cursor': 'not-allowed', 'background': 'red', 'color': 'white' });
+													}
+												} else if (Year == to_date_year) {
+													if (Month < to_date_month) {
+														$('.day_' + i + ' #seats' + i).remove();
+														$('.day_' + i + ' .offday_title' + i).remove();
+														$('.day_' + i + ' #not_allow' + i).show();
+														$('.day_' + i).click(false);
+														$('.day_' + i).css({ 'cursor': 'not-allowed', 'background': 'red', 'color': 'white' });
+													}
+												}
+											}
+										}
 							}
 					}
 				}
