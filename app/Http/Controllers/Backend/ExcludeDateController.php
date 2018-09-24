@@ -43,7 +43,7 @@ class ExcludeDateController extends Controller
     {
       //
         $request->validate([
-            'venues_id' => 'required|unique:exclude_dates',
+            'venues_id' => 'required',
             'from_date' => 'required|max:255',
             'to_date' => 'required',
             'active' => 'required'

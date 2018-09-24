@@ -78128,7 +78128,7 @@ function getCalendar(datas) {
 				var current_date = moment(datas.date).date();
 			}
 			if (exc_dates) {
-				exc_dates.forEach(function (item) {
+				exc_dates.forEach(function (item, index) {
 					if (venue_selected == item.venues_id) {
 						from_date = item.from_date;
 						to_date = item.to_date;
@@ -78139,7 +78139,7 @@ function getCalendar(datas) {
 			var Month_In_Alphabets = moment(datas.date).format('MMM');
 
 			var j = 0;
-			var days_status = 0;
+
 			for (var i = 1; i <= days; i++) {
 				if (default_month == Month) {
 					var classes = current_date > i ? 'greystyle' : '';
@@ -78148,9 +78148,11 @@ function getCalendar(datas) {
 					classes = '';
 				}
 				var checkerz = moment(Year + '-' + Month + '-' + i).format('YYYY-MM-DD');
+
 				var capacity = Month == default_month ? current_date < i ? data.capacity : '' : current_date <= i ? data.capacity : '';
 				var weeksInMonth = moment(moment().endOf('month') - moment().startOf('month')).weeks();
 				var dayname = moment(Year + '-' + Month + '-' + i).format('dddd');
+				var days_status = 0;
 				if (get_work_days.length > 0) {
 					for (var nn = 0; nn <= get_work_days.length; nn++) {
 						if (get_work_days[nn] == dayname.toLowerCase()) {
@@ -78161,13 +78163,11 @@ function getCalendar(datas) {
 				}
 
 				//console.log(weeksInMonth);
-				if (checkerz >= from_date && checkerz <= to_date) {
-					month_calendar += '<div class="calendar_div ' + classes + '"><span clas="date' + i + '">' + i + '</span>&nbsp;&nbsp;' + i.toString().toArabic() + '\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t<span>Not Allowed</span>\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t</div>';
-				} else if (days_status == 1 && i > current_date) {
-					month_calendar += '<div class="calendar_div ' + classes + '"><span clas="date' + i + '">' + i + '</span>&nbsp;&nbsp;' + i.toString().toArabic() + '\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t<span class="offday_title">OFF DAY</span>\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t<span class="dayname">' + dayname + '</span>\n\t\t\t\t\t\t\t\t\t\t\t</div>';
+				if (days_status == 1 && i > current_date) {
+					month_calendar += '<div class="calendar_div day_' + i + ' ' + classes + '"><span class="date' + i + '">' + i + '</span>&nbsp;&nbsp;' + i.toString().toArabic() + '\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t<span class="offday_title' + i + '">OFF DAY</span>\n\t\t\t\t\t\t\t\t\t\t\t<span class="not_allow" id="not_allow' + i + '" style="display:none">NOT ALLOWED</span>\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t<span class="dayname">' + dayname + '</span>\n\t\t\t\t\t\t\t\t\t\t\t</div>';
 					days_status = 0;
 				} else {
-					month_calendar += '<div class="main_dates calendar_div ' + classes + '"><span clas="date' + i + '">' + i + '</span>&nbsp;&nbsp;' + i.toString().toArabic() + '\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t<span id="seats' + i + '">' + capacity + '</span>\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t<span  id="booked' + i + '"></span>\n\t\t\t\t\t\t\t\t\t\t\t<span class="dayname">' + dayname + '</span></div>';
+					month_calendar += '<div class="main_dates calendar_div day_' + i + ' ' + classes + '"><span class="date' + i + '">' + i + '</span>&nbsp;&nbsp;' + i.toString().toArabic() + '\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t<span id="seats' + i + '">' + capacity + '</span>\n\t\t\t\t\t\t\t\t\t\t\t<span class="not_allow" id="not_allow' + i + '" style="display:none">NOT ALLOWED</span>\n\t\t\t\t\t\t\t\t\t\t\t<br>\n\t\t\t\t\t\t\t\t\t\t\t<span  id="booked' + i + '"></span>\n\t\t\t\t\t\t\t\t\t\t\t<span class="dayname">' + dayname + '</span></div>';
 				}
 			}
 
@@ -78291,6 +78291,65 @@ function getCalendar(datas) {
 				// 	j++;
 				// }
 			}
+
+			exc_dates.forEach(function (item, index) {
+				from_date = parseInt(moment(item.from_date, 'YYYY/MM/DD').format('D'));
+				from_date_month = parseInt(moment(item.from_date, 'YYYY/MM/DD').format('M'));
+				from_date_year = parseInt(moment(item.from_date, 'YYYY/MM/DD').format('Y'));
+				to_date = parseInt(moment(item.to_date, 'YYYY/MM/DD').format('D'));
+				to_date_month = parseInt(moment(item.to_date, 'YYYY/MM/DD').format('M'));
+				to_date_year = parseInt(moment(item.to_date, 'YYYY/MM/DD').format('Y'));
+
+				// For Loop in Days
+				for (var i = 1; i <= days; i++) {
+					//Check if from_date and to_date have same year
+					if (from_date_year == Year && from_date_year == to_date_year) {
+						//Check if from_date and to_date have same month
+						if (from_date_month == to_date_month) {
+							// Check if current month from_date with selected month
+							if (from_date_month == Month) {
+								//console.log(from_date , i ,to_date );
+								if (i >= from_date && i <= to_date && i > current_date) {
+									$('.day_' + i + ' #seats' + i).remove();
+									$('.day_' + i + ' .offday_title' + i).remove();
+									$('.day_' + i + ' #not_allow' + i).show();
+									$('.day_' + i).click(false);
+									$('.day_' + i).css({ 'cursor': 'not-allowed', 'background': 'red', 'color': 'white' });
+								}
+							}
+						}
+						// 
+						else {
+								if (from_date_month == Month) {
+									if (i > current_date && i >= from_date) {
+										$('.day_' + i + ' #seats' + i).remove();
+										$('.day_' + i + ' .offday_title' + i).remove();
+										$('.day_' + i + ' #not_allow' + i).show();
+										$('.day_' + i).click(false);
+										$('.day_' + i).css({ 'cursor': 'not-allowed', 'background': 'red', 'color': 'white' });
+									}
+								} else if (to_date_month == Month) {
+									if (i <= to_date) {
+										$('.day_' + i + ' #seats' + i).remove();
+										$('.day_' + i + ' .offday_title' + i).remove();
+										$('.day_' + i + ' #not_allow' + i).show();
+										$('.day_' + i).click(false);
+										$('.day_' + i).css({ 'cursor': 'not-allowed', 'background': 'red', 'color': 'white' });
+									}
+								} else {
+									if (Month > from_date_month && Month < to_date_month) {
+										$('.day_' + i + ' #seats' + i).remove();
+										$('.day_' + i + ' .offday_title' + i).remove();
+										$('.day_' + i + ' #not_allow' + i).show();
+										$('.day_' + i).click(false);
+										$('.day_' + i).css({ 'cursor': 'not-allowed', 'background': 'red', 'color': 'white' });
+									}
+									//console.log(Month,from_date_month,to_date_month);
+								}
+							}
+					}
+				}
+			});
 		}
 	});
 }

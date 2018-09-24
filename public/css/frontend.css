@@ -10653,3 +10653,7 @@ a.text-dark:focus {
   font-weight: 700;
 }
 
+.not_allow {
+  font-size: 15px;
+}
+

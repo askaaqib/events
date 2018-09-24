@@ -24,9 +24,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-    	$venues = Venues::all();
-
-        return view('frontend.index', compact('venues'));
+    	$venues = Venues::where('active',1)->get();
+      
+      return view('frontend.index', compact('venues'));
     }
 
    public function calendarDates(Request $request){
