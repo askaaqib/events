@@ -55,10 +55,11 @@ class EventRegisterController extends Controller
      */
     public function register(RegisterRequest $request)
     {
-
+        
         $rules = array(
                 'name'             => 'required',                        // just a normal required validation
                 'email'            => 'required|email|unique:users',     // required and must be unique in the ducks table
+                'mobileNumber'     => 'required|digits:11', // required and must be unique in the ducks table
                 'password'         => 'required',
                 'password_confirmation' => 'required|same:password'           // required and has to match the password field
             );
@@ -69,7 +70,7 @@ class EventRegisterController extends Controller
             // do the validation ----------------------------------
             // validate against the inputs from our form
             $validator = Validator::make(Input::all(), $rules);
-
+            
             // check if the validator failed -----------------------
             if ($validator->fails()) {
 
@@ -77,36 +78,39 @@ class EventRegisterController extends Controller
                 $messages = $validator->messages();
 
                 // redirect our user back to the form with the errors from the validator
-                return response()->json(['success', false, 'errors'=>$validator->errors()]);
+                return response()->json(['success' => false, 'errors'=>$validator->errors()]);
+            }
+            else{
+                $user = $this->userRepository
+                ->create($request->only('name', 'email', 
+                            'password', 'address', 
+                            'mobileNumber', 'schoolName', 
+                            'schoolPhone',  'job' ,'first_name', 'last_name'
+                        )
+                    );
+
+                // If the user must confirm their email or their account requires approval,
+                // create the account but don't log them in.
+                if (config('access.users.confirm_email') || config('access.users.requires_approval')) {
+                    event(new UserRegistered($user));
+                    $message =  config('access.users.requires_approval') ?
+                            __('exceptions.frontend.auth.confirmation.created_pending') :
+                            __('exceptions.frontend.auth.confirmation.created_confirm');
+                    $data = array('success'=>true, 'message' => $message);
+
+                    return response()->json($data);
+         
+                } else {
+                    auth()->login($user);
+
+                    event(new UserRegistered($user));
+
+                    $message = 'Already Registered';
+                    $data = array('success'=>true, 'message' => $message);
+                    return response()->json($data);
+                }
             }
 
-            $user = $this->userRepository
-                    ->create($request->only('name', 'email', 
-                                        'password', 'address', 
-                                        'mobileNumber', 'schoolName', 
-                                        'schoolPhone',  'job' ,'title','first_name', 'last_name'
-                                    )
-                            );
-
-        // If the user must confirm their email or their account requires approval,
-        // create the account but don't log them in.
-        if (config('access.users.confirm_email') || config('access.users.requires_approval')) {
-            event(new UserRegistered($user));
-            $message =  config('access.users.requires_approval') ?
-                    __('exceptions.frontend.auth.confirmation.created_pending') :
-                    __('exceptions.frontend.auth.confirmation.created_confirm');
-            $data = array('success'=>true, 'message' => $message);
-
-            return response()->json($data);
- 
-        } else {
-            auth()->login($user);
-
-            event(new UserRegistered($user));
-
-            $message = 'Already Registered';
-            $data = array('success'=>true, 'message' => $message);
-            return response()->json($data);
-        }
+        
     }
 }

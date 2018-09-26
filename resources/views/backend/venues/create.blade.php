@@ -15,20 +15,20 @@
                 <div class="row">
                     <div class="col-sm-5">
                         <h4 class="card-title mb-0">
-                            {{ __('labels.backend.venues.header') }}
-                            <small class="text-muted">{{ __('labels.backend.venues.create') }}</small>
+                            {{ __('labels.backend.venues.create') }}
                         </h4>
                     </div><!--col-->
                 </div><!--row-->
-
-                <hr />
-
+                <br>
+                <p>Here you can add new venue</p>
+                <hr>
                 <div class="row mt-4 mb-4">
                     <div class="col">
                         <div class="form-group row">
-                            {{ html()->label(__('validation.attributes.backend.venues.venue_name'))->class('col-md-2 form-control-label')->for('venue_name') }}
+                            
 
-                            <div class="col-md-10">
+                            <div class="col-md-12">
+                                {{ html()->label(__('validation.attributes.backend.venues.venue_name'))->class('form-control-label')->for('venue_name') }}
                                 {{ html()->text('venue_name')
                                     ->class('form-control')
                                     ->placeholder(__('validation.attributes.backend.venues.venue_name'))
@@ -38,10 +38,10 @@
                             </div><!--col-->
                         </div><!--form-group-->
 
-                        <div class="form-group row">
-                        {{ html()->label(__('validation.attributes.backend.venues.capacity'))->class('col-md-2 form-control-label')->for('capacity') }}
+                        <div class="form-group row">                   
 
-                            <div class="col-md-10">
+                            <div class="col-md-12">
+                                {{ html()->label(__('validation.attributes.backend.venues.capacity'))->class('form-control-label')->for('capacity') }}
                                 {{ html()->text('capacity')
                                     ->class('form-control')
                                     ->placeholder(__('validation.attributes.backend.venues.capacity'))
@@ -51,8 +51,8 @@
                         </div><!--form-group-->
 
                         <div class="form-group row">
-                            {{ html()->label(__('validation.attributes.backend.venues.days_of_work'))->class('col-md-2 form-control-label')->for('days_of_work') }}
-
+                            {{ html()->label(__('validation.attributes.backend.venues.days_of_work'))->class('col-md-12 blockquote form-control-label')->for('days_of_work') }}
+                            
                             <div class="col-md-1">
                                 Saturday
                                 <label class="switch switch-3d switch-primary">
@@ -112,9 +112,10 @@
                         </div><!--form-group-->
 
                         <div class="form-group row">
-                            {{ html()->label(__('validation.attributes.backend.venues.address'))->class('col-md-2 form-control-label')->for('address') }}
+                            
 
-                            <div class="col-md-10">
+                            <div class="col-md-12">
+                                {{ html()->label(__('validation.attributes.backend.venues.address'))->class('form-control-label')->for('address') }}
                                 {{ html()->text('address')
                                     ->class('form-control')
                                     ->placeholder(__('validation.attributes.backend.venues.address'))
@@ -142,7 +143,7 @@
             <div class="card-footer clearfix">
                 <div class="row">
                     <div class="col">
-                        {{ form_cancel(route('admin.auth.user.index'), __('buttons.general.cancel')) }}
+                        {{ form_cancel(route('admin.venues.index'), __('buttons.general.cancel')) }}
                     </div><!--col-->
 
                     <div class="col text-right">

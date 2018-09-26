@@ -16,18 +16,20 @@
                 <div class="row">
                     <div class="col-sm-5">
                         <h4 class="card-title mb-0">
-                            {{ __('labels.backend.riseCapacity.header') }}
-                            <small class="text-muted">{{ __('labels.backend.riseCapacity.create') }}</small>
+                            {{ __('labels.backend.riseCapacity.update') }}
                         </h4>
                     </div><!--col-->
                 </div><!--row-->
+                <br>
+                <p>To Rise days capacity, chose the event and dates you want to rise the capacity</p>
                 <hr />
                 <?php //dd($riseCapacity); ?>
                 <div class="row mt-4 mb-4">
                     <div class="col">
                         <div class="form-group row">
-                            {{ html()->label(__('validation.attributes.backend.riseCapacity.event_name'))->class('col-md-2 form-control-label')->for('event_name') }}
-                            <div class="col-md-10">
+                            
+                            <div class="col-md-5">
+                                {{ html()->label(__('validation.attributes.backend.riseCapacity.event_name'))->class('form-control-label')->for('event_name') }}
                                 {{ html()->select('events_id', $events )
                                     ->class('form-control')
                                     ->placeholder(__('validation.attributes.backend.riseCapacity.event_name'))
@@ -36,42 +38,8 @@
                                     ->required()
                                    }}
                             </div><!--col-->
-                        </div><!--form-group-->
-
-                        @php
-                           // $from_date = Carbon::createFromFormat("Y-m-d H:i:s",$riseCapacity->from_date)->format("Y-m-d");
-                        @endphp
-                        <div class="form-group row">
-                            {{ html()->label(__('labels.backend.riseCapacity.from_date'))->class('col-md-2 form-control-label')->for('from_date') }}
-
-                            <div class="col-md-10">
-                                {{ html()->date('from_date')
-                                    ->class('form-control')
-                                    ->placeholder(__('labels.backend.riseCapacity.from_date'))
-                                    ->attribute('maxlength', 191)
-                                    ->required()->value($riseCapacity->from_date) }}
-                            </div><!--col-->
-                        </div><!--form-group-->
-                        @php
-                        //$currentdate = Carbon::createFromFormat("Y-m-d H:i:s",$riseCapacity->to_date)->format("Y-m-d");
-                        @endphp
-                        <div class="form-group row">
-                            {{ html()->label(__('labels.backend.riseCapacity.to_date'))->class('col-md-2 form-control-label')->for('to_date') }}
-
-                            <div class="col-md-10">
-                                {{ html()->date('to_date')
-                                    ->class('form-control')
-                                    ->placeholder(__('labels.backend.riseCapacity.to_date'))
-                                    ->attribute('maxlength', 191)
-                                    ->required()->value($riseCapacity->to_date) }}
-                            </div><!--col-->
-                        </div><!--form-group-->
-
-
-                        <div class="form-group row">
-                        {{ html()->label(__('validation.attributes.backend.riseCapacity.capacity'))->class('col-md-2 form-control-label')->for('capacity') }}
-
-                            <div class="col-md-10">
+                             <div class="col-md-5">
+                                {{ html()->label(__('validation.attributes.backend.riseCapacity.capacity'))->class('form-control-label')->for('capacity') }}
                                 {{ html()->text('capacity')
                                     ->class('form-control')
                                     ->placeholder(__('validation.attributes.backend.riseCapacity.capacity'))
@@ -79,6 +47,40 @@
                                     ->value($riseCapacity->rise_capacity)
                                     }}
                             </div><!--col-->
+                        </div><!--form-group-->
+
+                        @php
+                           // $from_date = Carbon::createFromFormat("Y-m-d H:i:s",$riseCapacity->from_date)->format("Y-m-d");
+                        @endphp
+                        <div class="form-group row">
+                            <div class="col-md-5">
+                                {{ html()->label(__('labels.backend.riseCapacity.from_date'))->class('col-md-2 form-control-label')->for('from_date') }}
+                                {{ html()->date('from_date')
+                                    ->class('form-control')
+                                    ->placeholder(__('labels.backend.riseCapacity.from_date'))
+                                    ->attribute('maxlength', 191)
+                                    ->required()->value($riseCapacity->from_date) }}
+                            </div><!--col-->
+                             <div class="col-md-5">
+                                {{ html()->label(__('labels.backend.riseCapacity.to_date'))->class('col-md-2 form-control-label')->for('to_date') }}
+                                {{ html()->date('to_date')
+                                    ->class('form-control')
+                                    ->placeholder(__('labels.backend.riseCapacity.to_date'))
+                                    ->attribute('maxlength', 191)
+                                    ->required()->value($riseCapacity->to_date) }}
+                            </div><!--col-->
+                        </div><!--form-group-->
+                        @php
+                        //$currentdate = Carbon::createFromFormat("Y-m-d H:i:s",$riseCapacity->to_date)->format("Y-m-d");
+                        @endphp
+                        <div class="form-group row">
+                        </div><!--form-group-->
+
+
+                        <div class="form-group row">
+                        
+
+                           
                         </div><!--form-group-->
 
 

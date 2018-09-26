@@ -93,7 +93,7 @@ class UserRepository extends BaseRepository
     {
         
         return DB::transaction(function () use ($data) {
-
+            //dd($data);
             $user = parent::create([
                 'name'              => $data['name'],
                 'address'           => $data['address'],
@@ -101,7 +101,6 @@ class UserRepository extends BaseRepository
                 'schoolName'        => $data['schoolName'],
                 'schoolPhone'       => $data['schoolPhone'],
                 'job'               => $data['job'],
-                'title'             => $data['title'],
                 'email'             => $data['email'],
                 'confirmation_code' => md5(uniqid(mt_rand(), true)),
                 'active'            => 1,

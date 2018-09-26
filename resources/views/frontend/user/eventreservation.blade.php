@@ -15,6 +15,17 @@
                         <div class="row">
                             <div class="col-12 col-md-12">
                                 <div class="form-group">
+                                    {{ html()->label(__('validation.attributes.frontend.chosen_date'))->for('chosen_date') }}
+
+                                    {{ html()->text('chosen_date')
+                                        ->class('form-control')
+                                        ->placeholder(__('validation.attributes.frontend.chosen_date'))
+                                        ->attribute('maxlength', 191)
+                                        ->readonly('true') }}
+                                </div><!--col-->
+                            </div>
+                            <div class="col-12 col-md-12">
+                                <div class="form-group">
                                     {{ html()->label(__('validation.attributes.frontend.students_count'))->for('students_count_reservation') }}
 
                                     {{ html()->text('students_count_reservation')
@@ -94,6 +105,7 @@
                                     {{ html()->label(__('validation.attributes.frontend.students_name_list'))->for('students_name_list') }}
 
                                     {{ html()->file('students_name_list')
+                                        ->required('required')
                                         ->class('form-control filestyle') }}
                                 </div><!--form-group-->
                                 <div class="form-group">

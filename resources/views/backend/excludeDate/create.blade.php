@@ -15,19 +15,20 @@
                 <div class="row">
                     <div class="col-sm-5">
                         <h4 class="card-title mb-0">
-                            {{ __('labels.backend.excludeDates.header') }}
-                            <small class="text-muted">{{ __('labels.backend.excludeDates.create') }}</small>
+                            {{ __('labels.backend.excludeDates.create') }}
+                            
                         </h4>
                     </div><!--col-->
                 </div><!--row-->
-
+                <br>
+                <p>To exclude dates from been reserved, chose the venue and dates you want to exclude from being reserved</p>
                 <hr />
 
                 <div class="row mt-4 mb-4">
                     <div class="col">
-                        <div class="form-group row">
-                        {{ html()->label(__('validation.attributes.backend.excludeDates.venue_name'))->class('col-md-2 form-control-label')->for('venue_name') }}
-                            <div class="col-md-3">
+                        <div class="form-group row">                        
+                            <div class="col-md-10">
+                                {{ html()->label(__('validation.attributes.backend.excludeDates.venue_name'))->class('form-control-label')->for('venue_name') }}
                                 {{ html()->select('venues_id', $venues, null)
                                     ->class('form-control')
                                     ->placeholder(__('validation.attributes.backend.excludeDates.venue_name'))
@@ -38,21 +39,18 @@
                         </div><!--form-group-->
 
                         <div class="form-group row">
-                            {{ html()->label(__('labels.backend.excludeDates.from_date'))->class('col-md-2 form-control-label')->for('from_date') }}
+                            
 
-                            <div class="col-md-3">
+                            <div class="col-md-5">
+                                {{ html()->label(__('labels.backend.excludeDates.from_date'))->class('form-control-label')->for('from_date') }}
                                 {{ html()->date('from_date')
                                     ->class('form-control')
                                     ->placeholder(__('labels.backend.excludeDates.from_date'))
                                     ->attribute('maxlength', 191)
                                     ->required() }}
                             </div><!--col-->
-                        </div><!--form-group-->
-
-                        <div class="form-group row">
-                            {{ html()->label(__('labels.backend.excludeDates.to_date'))->class('col-md-2 form-control-label')->for('to_date') }}
-
-                            <div class="col-md-3">
+                            <div class="col-md-5">
+                                {{ html()->label(__('labels.backend.excludeDates.to_date'))->class('form-control-label')->for('to_date') }}
                                 {{ html()->date('to_date')
                                     ->class('form-control')
                                     ->placeholder(__('labels.backend.excludeDates.to_date'))
@@ -62,9 +60,10 @@
                         </div><!--form-group-->
 
                         <div class="form-group row">
-                        {{ html()->label(__('validation.attributes.backend.excludeDates.reason'))->class('col-md-2 form-control-label')->for('reason') }}
+                        
 
                             <div class="col-md-10">
+                                {{ html()->label(__('validation.attributes.backend.excludeDates.reason'))->class('form-control-label')->for('reason') }}
                                 {{ html()->text('reason')
                                     ->class('form-control')
                                     ->placeholder(__('validation.attributes.backend.excludeDates.reason'))
@@ -92,7 +91,7 @@
             <div class="card-footer clearfix">
                 <div class="row">
                     <div class="col">
-                        {{ form_cancel(route('admin.auth.user.index'), __('buttons.general.cancel')) }}
+                        {{ form_cancel(route('admin.excludeDates.index'), __('buttons.general.cancel')) }}
                     </div><!--col-->
 
                     <div class="col text-right">

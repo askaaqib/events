@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend\User;
 
 use App\Http\Controllers\Controller;
+use App\Venues;
 
 /**
  * Class DashboardController.
@@ -14,7 +15,9 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('frontend.user.dashboard');
+       $venues = Venues::where('active',1)->get();
+       
+      return redirect('/')->withInput(['venues'=>$venues]);
     }
 
     public function eventindex()

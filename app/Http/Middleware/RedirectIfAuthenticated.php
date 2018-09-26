@@ -19,7 +19,8 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if (auth()->guard($guard)->check()) {
+        if (auth()->guard($guard)->check() && auth()->admin == 1) {
+            
             return redirect()->route(home_route());
         }
 

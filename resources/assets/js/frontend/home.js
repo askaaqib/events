@@ -12,6 +12,13 @@ var currentYear = moment().year();
 var currentDate = moment().format('YYYY-MM-DD');
 
 
+$(document).ready(function () {
+    $(document).ajaxStart(function () {
+        $("#loading-gif").show();
+    }).ajaxStop(function () {
+        $("#loading-gif").hide();
+    });
+});
 
 //Check what if select previous month
 $(document).on('click','.left_bar', function(){
@@ -144,8 +151,7 @@ function getCalendar(datas, forwards=null){
 			
 
 			if(default_month == Month && default_year == Year){
-				console.log(default_year,Year);
-	            var current_date = moment().date()
+				var current_date = moment().date()
 	        }else{
 	        	var current_date = moment(datas.date).date();
 	        }	
@@ -189,7 +195,7 @@ function getCalendar(datas, forwards=null){
 	            	if(days_status == 1 && i > current_date){
 	            		month_calendar += `<div class="calendar_div day_${i} ${classes}"><span class="date${i}">${i}</span>&nbsp;&nbsp;${i.toString().toArabic()}
 											<br>
-											<span class="offday_title${i}">OFF DAY</span>
+											<span class="offday_title" id="offday_title${i}">OFF DAY</span>
 											<span class="not_allow" id="not_allow${i}" style="display:none">NOT ALLOWED</span>
 											<br>
 											<span class="dayname">${dayname}</span>
@@ -362,7 +368,7 @@ function getCalendar(datas, forwards=null){
 	        			// 	j++;
 	        			// }
 	        		}
-
+	        		if(exc_dates.length >0){
 			 		exc_dates.forEach(function(item,index){
 			 				from_date = parseInt(moment(item.from_date,'YYYY/MM/DD').format('D'));
 			 				from_date_month = parseInt(moment(item.from_date,'YYYY/MM/DD').format('M'));
@@ -382,7 +388,7 @@ function getCalendar(datas, forwards=null){
 			 								//console.log(from_date , i ,to_date );
 				 							if(i >=from_date && i <= to_date && i > current_date){
 			 									$('.day_'+i+' #seats'+i).remove();
-							 					$('.day_'+i +' .offday_title'+i).remove();
+							 					$('.day_'+i +' #offday_title'+i).remove();
 							 					$('.day_'+i+' #not_allow'+i).show();
 							 					$('.day_'+i).click(false);
 							 					$('.day_'+i).css({'cursor':'not-allowed','background':'red','color':'white'});
@@ -395,7 +401,7 @@ function getCalendar(datas, forwards=null){
 		 								if(from_date_month == Month && from_date_year == Year){
 		 									if(i > current_date && i >= from_date){
 		 										$('.day_'+i+' #seats'+i).remove();
-							 					$('.day_'+i +' .offday_title'+i).remove();
+							 					$('.day_'+i +' #offday_title'+i).remove();
 							 					$('.day_'+i+' #not_allow'+i).show();
 							 					$('.day_'+i).click(false);
 							 					$('.day_'+i).css({'cursor':'not-allowed','background':'red','color':'white'});
@@ -405,7 +411,7 @@ function getCalendar(datas, forwards=null){
 		 								else if(to_date_month == Month && to_date_year == Year){
 		 									if(i <= to_date){
 		 										$('.day_'+i+' #seats'+i).remove();
-							 					$('.day_'+i +' .offday_title'+i).remove();
+							 					$('.day_'+i +' #offday_title'+i).remove();
 							 					$('.day_'+i+' #not_allow'+i).show();
 							 					$('.day_'+i).click(false);
 							 					$('.day_'+i).css({'cursor':'not-allowed','background':'red','color':'white'});
@@ -417,7 +423,7 @@ function getCalendar(datas, forwards=null){
 		 										if(from_date_year == Year){
 		 											if(Month > from_date_month && Month < to_date_month){
 				 										$('.day_'+i+' #seats'+i).remove();
-									 					$('.day_'+i +' .offday_title'+i).remove();
+									 					$('.day_'+i +' #offday_title'+i).remove();
 									 					$('.day_'+i+' #not_allow'+i).show();
 									 					$('.day_'+i).click(false);
 									 					$('.day_'+i).css({'cursor':'not-allowed','background':'red','color':'white'});	
@@ -428,7 +434,7 @@ function getCalendar(datas, forwards=null){
 		 										if(Year == from_date_year){
 		 											if(Month > from_date_month){
 		 												$('.day_'+i+' #seats'+i).remove();
-									 					$('.day_'+i +' .offday_title'+i).remove();
+									 					$('.day_'+i +' #offday_title'+i).remove();
 									 					$('.day_'+i+' #not_allow'+i).show();
 									 					$('.day_'+i).click(false);
 									 					$('.day_'+i).css({'cursor':'not-allowed','background':'red','color':'white'});
@@ -437,7 +443,7 @@ function getCalendar(datas, forwards=null){
 		 										else if(Year == to_date_year){
 		 											if(Month < to_date_month){
 		 												$('.day_'+i+' #seats'+i).remove();
-									 					$('.day_'+i +' .offday_title'+i).remove();
+									 					$('.day_'+i +' #offday_title'+i).remove();
 									 					$('.day_'+i+' #not_allow'+i).show();
 									 					$('.day_'+i).click(false);
 									 					$('.day_'+i).css({'cursor':'not-allowed','background':'red','color':'white'});
@@ -449,6 +455,7 @@ function getCalendar(datas, forwards=null){
 			 					}
 			 				}
 			 		});
+			 		}
 		}
 	})
 }
@@ -465,7 +472,7 @@ $(document).on('click', '.main_dates', function(){
 	var selected_year = parseInt($('#year').text());
 	var remaining = parseInt($(this).children().eq(2).text());
 	var booked = $(this).children().eq(4).text() == '' ? 0:parseInt($(this).children().eq(4).text());
-	var number_month = All_month.indexOf(selected_month) < 10 ? '0'+All_month.indexOf(selected_month) : All_month.indexOf(selected_month);
+	var number_month = All_month.indexOf(selected_month) < 9 ? '0'+ (All_month.indexOf(selected_month) + 1) : All_month.indexOf(selected_month) + 1;
 	var selected_full_date = selected_year + '-' + number_month + '-' + selected_date;
 
 
@@ -555,6 +562,8 @@ $(document).on('click', '.main_dates', function(){
 									`);
 				var studentsCount = $("#students_count").val();
 				$("#students_count_reservation").val(studentsCount);
+				var selected_date = $("#selected_date").val();
+				$("#chosen_date").val(selected_date);
 
 			   $("html, body").animate({ scrollTop: $(document).height() }, 1000);
 		   	}
@@ -619,6 +628,7 @@ $(document).on('click', '#register', function(){
 
 	        $("#logged-in").html(data);
 	        $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+	        
 	    }
 	});
 })	
@@ -641,6 +651,7 @@ $(document).on('click', '#register', function(){
 
 
 $(document).on('submit', 'form.form_register', function(e){
+		var show_login = false;
       	$.ajax({
       	headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -649,33 +660,57 @@ $(document).on('submit', 'form.form_register', function(e){
 	    url : "/event-register",
 	    data: $( this ).serializeArray() ,
 	    success : function (data) {
-	    	// if(data.success){
-	    	// 	console.log($("#logged-in"))
-	    	// 	var div = `<div class="logged-in">
-						// 		${data.message}
-	    	// 			  </div>`
-	    	// 	$("#logged-in").html(div);
-	    	// 	$('.login-succes').addClass('d-none');
-	    	// 	$('#logged-in').addClass('alert-success');
-	    	// }else{
-	    	// 	$('.login-succes').removeClass('d-none');
-	    	// 	$('.login-succes').removeClass('alert-success', 'd-none');
-	    	// 	$('.login-succes').addClass('alert-danger');
+	    	if(data.success){
+	    		//console.log($("#logged-in"))
+	    		$('#login').trigger('click');
+	    		setTimeout(function(){
+	    				    		var div = `<div class="logged-in" style="margin-bottom:10px;">
+								${data.message}
+	    				  </div>`
+	    		$("#logged-in").prepend(div);
+	    		$('.login-succes').addClass('d-none');
+	    		$('.logged-in').addClass('alert-success');
+	    		},1000)
 
-	    	// 	$('.login-succes').html(data.message).show()
-	    	// 	//$("#logged-in").html(data);
-	    	// }
-	 	// $("#logged-in").html(data);
-		// $("html, body").animate({ scrollTop: $(document).height() }, 1000);
-		$("html, body").animate({ scrollTop: $(document).height() }, 1000);
+	    		
+
+	    	}
+	    	else if(data.errors){
+	    		$.each(data.errors,function(key,value){
+	    			$('.login-succes').removeClass('d-none');
+		    		$('.login-succes').removeClass('alert-success', 'd-none');
+		    		$('.login-succes').addClass('alert-danger');
+		    		$('.login-succes').html(value).show()
+	    		});
+	    		
+	    	}
+	    	else{
+	    		$('.login-succes').removeClass('d-none');
+	    		$('.login-succes').removeClass('alert-success', 'd-none');
+	    		$('.login-succes').addClass('alert-danger');
+
+	    		$('.login-succes').html(data.message).show()
+	    		
+	    		$("#logged-in").html(data);
+	    	}
+	 	
+		//$("html, body").animate({ scrollTop: $(document).height() }, 1000);
+	    },
+	    error: function(data){
+	    	$.each(data.responseJSON.errors,function(key,value){
+	    			$('.login-succes').removeClass('d-none');
+		    		$('.login-succes').removeClass('alert-success', 'd-none');
+		    		$('.login-succes').addClass('alert-danger');
+		    		$('.login-succes').html(value).show()
+	    		});
 	    }
 	});
-  e.preventDefault();
+  e.preventDefault();  
 });
 
 
 $(document).on('submit', 'form.form_id', function(e){
-	
+		
       	$.ajax({
       	headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -692,13 +727,23 @@ $(document).on('submit', 'form.form_id', function(e){
 	    		$('.login-succes').addClass('d-none');
 	    		$('#logged-in').addClass('alert-success');
 	    		getReservation()
-	    	}else{
-	    		$('.login-succes').removeClass('d-none');
-	    		$('.login-succes').removeClass('alert-success', 'd-none');
-	    		$('.login-succes').addClass('alert-danger');
+	    	}
+	    	else if(data.errors){
+	    		$.each(data.errors,function(key,value){
+	    			$('.login-succes').removeClass('d-none');
+		    		$('.login-succes').removeClass('alert-success', 'd-none');
+		    		$('.login-succes').addClass('alert-danger');
+		    		$('.login-succes').html(value).show()
+	    		});
+	    		
+	    	}
+    		else{
+    		$('.login-succes').removeClass('d-none');
+    		$('.login-succes').removeClass('alert-success', 'd-none');
+    		$('.login-succes').addClass('alert-danger');
 
-	    		$('.login-succes').html(data.message).show()
-	    		//$("#logged-in").html(data);
+    		$('.login-succes').html(data.message).show()
+    		//$("#logged-in").html(data);
 	    	}
 	   
 	 	// $("#logged-in").html(data);
@@ -809,6 +854,8 @@ function getReservationForm(){
 		$("#get-reservation").html(text);
 		var studentsCount = $("#students_count").val();
 		$("#students_count_reservation").val(studentsCount);
+		var selected_date = $("#selected_date").val();
+		$("#chosen_date").val(selected_date);
 		//$('#students_count_reservation').prop('disabled', true);
 	})
 }

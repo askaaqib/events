@@ -41,7 +41,7 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th>{{ __('labels.backend.bookings.customer_name') }}</th>
+                            {{-- <th>{{ __('labels.backend.bookings.customer_name') }}</th> --}}
                             <th>{{ __('labels.backend.bookings.venue_name') }}</th>
                             <th>{{ __('labels.backend.bookings.event_name') }}</th>
                             <th>{{ __('labels.backend.bookings.book_date') }}</th>
@@ -59,9 +59,10 @@
 
 
                         @foreach ($bookings as $booking)
-                        <?php //dd($booking->events->event_name); ?>
+                        <?php //dd($booking->venues); ?>
+                        <?php //dd($booking->users); ?>
                             <tr>
-                                <td>{!! $booking->users->first_name !!} {{ $booking->users->last_name }}</td>
+                                {{-- <td>{!! $booking->users->name !!}</td> --}}
                                 <td>{!! $booking->venues->venue_name !!}</td>
                                 <td>{!! $booking->events->event_name !!}</td>
                                 <td>{!! $booking->book_date !!}</td>
@@ -78,7 +79,7 @@
                                 </td>
                                 <td>
                                 <div class="btn-group" role="group" aria-label="User Actions">
-                                    {{-- <a href="{{url('admin/bookings/edit', $booking->id)}}" data-toggle="tooltip" data-placement="top" title="" class="btn btn-info" data-original-title="edit"><i class="far fa-edit"></i> </a> --}}
+                                    <a href="{{url('admin/bookings/edit', $booking->id)}}" data-toggle="tooltip" data-placement="top" title="" class="btn btn-info" data-original-title="edit"><i class="far fa-edit"></i> </a>
                                     <a href="{{url('admin/bookings/destroy', $booking->id)}}"  onclick="return confirm('Are you sure you want to delete?');" data-toggle="tooltip" data-placement="top" title="" class="btn btn-danger" data-original-title="delete"><i class="far fa-trash-alt"></i> </a>
                                 </div>
                                 </td>

@@ -138,4 +138,9 @@ class VenuesContoller extends Controller
     {
         //
     }
+
+    public function getCapacity($id){
+        $venues = Venues::find($id);
+        return $venues->capacity;
+    }
 }

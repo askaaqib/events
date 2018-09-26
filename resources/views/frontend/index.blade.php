@@ -2,7 +2,7 @@
 
 @section('title', app_name() . ' | '.__('navs.general.home'))
 
-@section('content')
+@section('content')   
     <div class="row mb-4">
         <div class="col">
             <div class="card">
@@ -39,7 +39,7 @@
         <div class="col">
             <div class="alert d-none login-succes register-success"></div>
             <div class="card">
-                    <div class="card-body">
+                    <div class="card-body auth-body">
                     <div id="logged-in">
                        
                     </div>
@@ -78,6 +78,9 @@
         </div><!--col-->
     </div><!--row-->
     
+    <div id="loading-gif" class="overlay">
+        <div id="loading-img"><img src="{{ url('/') }}/img/frontend/loading.gif" alt=""></div>
+    </div>
 
     <input type="hidden" id="current_venue" value="">
     <input type="hidden" id="students_count" value="">

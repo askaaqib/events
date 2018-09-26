@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Venues;
+use App\Bookings;
 use Illuminate\Validation\Validator;
 
 class VenuesController extends Controller
@@ -144,5 +145,23 @@ class VenuesController extends Controller
 
         $data = array('success' => true, 'message' => 'Venue Deleted Successfully');
         return redirect('admin/venues')->with('data', $data);
+    }
+
+    public function getCapacity(Request $request){
+        $venues = Venues::find($request->venue_id);
+        if($venues){
+          $venue_capacity = $venues->capacity;
+            $bookings = Bookings::where('venue_id',$request->venue_id)->get();
+            $total_booking = 0;
+            foreach($bookings as $booking){
+                $total_booking += $booking->students_count;
+            }
+            $final_capacity = $venues->capacity - $total_booking;
+            return $final_capacity;  
+        }
+        else{
+            return '';
+        }
+        //dd($total_booking,$venues->capacity,$final_capacity);
     }
 }

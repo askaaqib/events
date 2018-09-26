@@ -1,6 +1,6 @@
 <div class="row justify-content-center align-items-center">
         <div class="col col-sm-8 align-self-center">
-            <div class="card">
+            <div class="card register-card">
                 <div class="card-header">
                     <strong>
                         {{ __('labels.frontend.auth.register_box_title') }}
@@ -10,27 +10,18 @@
                 <div class="card-body">
                     {{ html()->form()->id('form_register')->class('form_register')->open() }}
                         <div class="row">
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-12">
                                 <div class="form-group">
                                     {{ html()->label(__('validation.attributes.frontend.name'))->for('name') }}
 
                                     {{ html()->text('name')
                                         ->class('form-control')
                                         ->placeholder(__('validation.attributes.frontend.name'))
+                                        ->required()
                                         ->attribute('maxlength', 191) }}
                                 </div><!--col-->
                             </div>
-                            <div class="col col-md-6">
-                                <div class="form-group">
-                                    {{ html()->label(__('validation.attributes.frontend.email'))->for('email') }}
 
-                                    {{ html()->email('email')
-                                        ->class('form-control')
-                                        ->placeholder(__('validation.attributes.frontend.email'))
-                                        ->attribute('maxlength', 191)
-                                        ->required() }}
-                                </div><!--form-group-->
-                            </div><!--col-->
                         </div><!--row-->
 
                         <div class="row">
@@ -60,12 +51,13 @@
                         <div class="row">
                             <div class="col col-md-6">
                                 <div class="form-group">
-                                    {{ html()->label(__('validation.attributes.frontend.address'))->for('address') }}
+                                    {{ html()->label(__('validation.attributes.frontend.email'))->for('email') }}
 
-                                    {{ html()->text('address')
+                                    {{ html()->email('email')
                                         ->class('form-control')
-                                        ->placeholder(__('validation.attributes.frontend.address'))
-                                        ->attribute('maxlength', 191) }}
+                                        ->placeholder(__('validation.attributes.frontend.email'))
+                                        ->attribute('maxlength', 191)
+                                        ->required() }}
                                 </div><!--form-group-->
                             </div><!--col-->
                             <div class="col col-md-6">
@@ -75,13 +67,37 @@
                                     {{ html()->text('mobileNumber')
                                         ->class('form-control')
                                         ->placeholder(__('validation.attributes.frontend.mobileNumber'))
+                                        ->required()
                                         ->attribute('maxlength', 191) }}
                                 </div><!--form-group-->
                             </div><!--col-->
                         </div><!--row-->
-
                         <div class="row">
                             <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                {{ html()->label(__('validation.attributes.frontend.job_title'))->for('job') }}
+
+                                {{ html()->text('job')
+                                    ->class('form-control')
+                                    ->placeholder(__('validation.attributes.frontend.job_title'))
+                                    ->required()
+                                    ->attribute('maxlength', 191) }}
+                                </div><!--form-group-->
+                            </div><!--col-->
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                {{ html()->label(__('validation.attributes.frontend.schoolName'))->for('schoolName') }}
+
+                                {{ html()->text('schoolName')
+                                    ->class('form-control')
+                                    ->placeholder(__('validation.attributes.frontend.schoolName'))
+                                    ->required()
+                                    ->attribute('maxlength', 191) }}
+                                </div><!--form-group-->
+                            </div><!--col-->
+                        </div><!--row-->
+                        <div class="row">
+                            {{-- <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     {{ html()->label(__('validation.attributes.frontend.title'))->for('title') }}
 
@@ -90,7 +106,7 @@
                                         ->placeholder(__('validation.attributes.frontend.title'))
                                         ->attribute('maxlength', 191) }}
                                 </div><!--form-group-->
-                            </div><!--col-->
+                            </div><!--col--> --}}
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                 {{ html()->label(__('validation.attributes.frontend.schoolPhone'))->for('schoolPhone') }}
@@ -98,32 +114,23 @@
                                 {{ html()->text('schoolPhone')
                                     ->class('form-control')
                                     ->placeholder(__('validation.attributes.frontend.schoolPhone'))
+                                    ->required()
                                     ->attribute('maxlength', 191) }}
+                                </div><!--form-group-->
+                            </div><!--col-->
+                            <div class="col col-md-6">
+                                <div class="form-group">
+                                    {{ html()->label(__('validation.attributes.frontend.city'))->for('address') }}
+
+                                    {{ html()->text('address')
+                                        ->class('form-control')
+                                        ->placeholder(__('validation.attributes.frontend.city'))
+                                        ->required()
+                                        ->attribute('maxlength', 191) }}
                                 </div><!--form-group-->
                             </div><!--col-->
                         </div>
-                        <div class="row">
-                            <div class="col-12 col-md-6">
-                                <div class="form-group">
-                                {{ html()->label(__('validation.attributes.frontend.schoolName'))->for('schoolName') }}
-
-                                {{ html()->text('schoolName')
-                                    ->class('form-control')
-                                    ->placeholder(__('validation.attributes.frontend.schoolName'))
-                                    ->attribute('maxlength', 191) }}
-                                </div><!--form-group-->
-                            </div><!--col-->
-                            <div class="col-12 col-md-6">
-                                <div class="form-group">
-                                {{ html()->label(__('validation.attributes.frontend.job'))->for('job') }}
-
-                                {{ html()->text('job')
-                                    ->class('form-control')
-                                    ->placeholder(__('validation.attributes.frontend.job'))
-                                    ->attribute('maxlength', 191) }}
-                                </div><!--form-group-->
-                            </div><!--col-->
-                        </div><!--row-->
+                        
 
 
                         

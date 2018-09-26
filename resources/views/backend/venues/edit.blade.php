@@ -1,6 +1,6 @@
 @extends ('backend.layouts.app')
 
-@section ('title', __('labels.backend.venues.header') . ' | ' . __('labels.backend.venues.create'))
+@section ('title', __('labels.backend.venues.header') . ' | ' . __('labels.backend.venues.update'))
 
 
 @section('content')
@@ -16,20 +16,22 @@
                 <div class="row">
                     <div class="col-sm-5">
                         <h4 class="card-title mb-0">
-                            {{ __('labels.backend.venues.header') }}
-                            <small class="text-muted">{{ __('labels.backend.venues.create') }}</small>
+                            {{ __('labels.backend.venues.update') }}
+                            
                         </h4>
                     </div><!--col-->
                 </div><!--row-->
-
+                <br>
+                <p>Here you can edit venue</p>
                 <hr />
 
                 <div class="row mt-4 mb-4">
                     <div class="col">
                         <div class="form-group row">
-                            {{ html()->label(__('validation.attributes.backend.venues.venue_name'))->class('col-md-2 form-control-label')->for('venue_name') }}
+                            
 
-                            <div class="col-md-10">
+                            <div class="col-md-12">
+                                {{ html()->label(__('validation.attributes.backend.venues.venue_name'))->class('form-control-label')->for('venue_name') }}
                                 {{ html()->text('venue_name')
                                     ->class('form-control')
                                     ->placeholder(__('validation.attributes.backend.venues.venue_name'))
@@ -40,9 +42,8 @@
                         </div><!--form-group-->
 
                         <div class="form-group row">
-                        {{ html()->label(__('validation.attributes.backend.venues.capacity'))->class('col-md-2 form-control-label')->for('capacity') }}
-
-                            <div class="col-md-10">
+                            <div class="col-md-12">
+                                {{ html()->label(__('validation.attributes.backend.venues.capacity'))->class('form-control-label')->for('capacity') }}
                                 {{ html()->text('capacity')
                                     ->class('form-control')
                                     ->placeholder(__('validation.attributes.backend.venues.capacity'))
@@ -52,7 +53,7 @@
                         </div><!--form-group-->
 
                         <div class="form-group row">
-                            {{ html()->label(__('validation.attributes.backend.venues.days_of_work'))->class('col-md-2 form-control-label')->for('days_of_work') }}
+                            {{ html()->label(__('validation.attributes.backend.venues.days_of_work'))->class('col-md-12 blockquote form-control-label')->for('days_of_work') }}
                             @php 
                                 $const = ['saturday', 'sunday', 'monday', 'tuesday', 'wednessday', 'thursday', 'friday'];
                                 $days_work = unserialize(base64_decode($venues->days_of_work));
@@ -75,9 +76,10 @@
                         </div><!--form-group-->
 
                         <div class="form-group row">
-                            {{ html()->label(__('validation.attributes.backend.venues.address'))->class('col-md-2 form-control-label')->for('address') }}
+                            
 
-                            <div class="col-md-10">
+                            <div class="col-md-12">
+                                {{ html()->label(__('validation.attributes.backend.venues.address'))->class('form-control-label')->for('address') }}
                                 {{ html()->text('address')
                                     ->class('form-control')
                                     ->placeholder(__('validation.attributes.backend.venues.address'))

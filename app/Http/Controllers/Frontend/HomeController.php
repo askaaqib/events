@@ -103,8 +103,10 @@ class HomeController extends Controller
         return \Response::json($jsonError);
     }
     else{
+      //dd($request->all());
       $bookings = new Bookings();
       $event_id = Events::where('venues_id', $request->reservation_venue_id)->value('id');
+      $bookings->book_date = $request->chosen_date;
       $bookings->event_id = $event_id;
       $bookings->customer_id = auth()->user()->id;
       $bookings->students_count = $request->students_count_reservation;
@@ -115,6 +117,7 @@ class HomeController extends Controller
       $bookings->venue_id = $request->reservation_venue_id;
       $students_file = $request->students_name_list;
       $students_file_name = rand(0,9999). $students_file->getClientOriginalName();
+      $students_file_name = str_replace(' ', '', $students_file_name);
       $bookings->file_uploads = $students_file_name ;
       
       $students_file->move(public_path('uploads'),$students_file_name);

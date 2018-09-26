@@ -119,7 +119,7 @@ class EventLoginController extends Controller
 
 
         $rules = array (
-                'mobile' => 'required',
+                'mobile' => 'required|regex:/[0-9]{11}/|digits:11',
                 'password' => 'required|max:255' 
         );
 
@@ -127,7 +127,7 @@ class EventLoginController extends Controller
 
 
         if ($validator->fails ()) {
-            return response()->json(['success', false, 'errors'=>$validator->errors()]);
+            return response()->json(['success' => false, 'errors'=> $validator->errors() ]);
         } else {
             $Credentials = array (
                 'mobileNumber' => $request->get('mobile'),

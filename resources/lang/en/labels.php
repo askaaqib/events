@@ -111,7 +111,8 @@ return [
 
         'venues' => [
             'header' => 'Venues Management',
-            'create' => 'Create Venue',
+            'create' => 'Add New Venue',
+            'update' => 'Update Venue',
             'counts' => 'Venues total|Venue total',
             'view' => 'Venues',
             'capacity' => 'Capacity',
@@ -125,12 +126,13 @@ return [
         'excludeDates' => [
             'header' => 'Exclude Dates Management',
             'create' => 'Create Exclude Date',
+            'update' => 'Update Exclude Date',
             'counts' => 'Exclude Dates total|Exclude Date total',
             'view' => 'excludeDates',
-            'from_date' => 'Date From',
+            'from_date' => 'From',
             'name' => 'Name',
-            'venue_name' => 'Venue Name',
-            'to_date' => 'Date To' ,
+            'venue_name' => 'Chose Venue',
+            'to_date' => 'To' ,
             'address' => 'Address',
             'active' => 'Active',
             'all_excludeDates' => 'All excludeDates',
@@ -139,22 +141,24 @@ return [
         'riseCapacity' => [
             'header' => 'Rise Capacity Management',
             'create' => 'Create Rise Capacity',
+            'update' => 'Update Rise Capacity',
             'counts' => 'Rise Capacity total|Rise Capacity total',
             'view' => 'excludeDates',
-            'from_date' => 'Date From',
+            'from_date' => 'From',
             'name' => 'Name',
             'venue_name' => 'Venue Name',
-            'event_name' => 'Event Name',
-            'to_date' => 'Date To' ,
+            'event_name' => 'Chose Event',
+            'to_date' => 'To' ,
             'address' => 'Address',
             'active' => 'Active',
             'all_riseCapacity' => 'All Rise Capacity',
             'riseCapacity' => 'Set Rise Capacity',
-            'capacity' => 'Rise Capacity'
+            'capacity' => 'Rise Capacity to'
         ],
         'events' => [
             'header' => 'Events Management',
             'create' => 'Create Event',
+            'update' => 'Update Event',
             'counts' => 'Event total|Events total',
             'view' => 'All Events',
             'venue_name' => 'Venue Name',
@@ -167,6 +171,7 @@ return [
         'bookings' => [
             'header' => 'Bookings Management',
             'create' => 'Create Booking',
+            'update' => 'Update Booking',
             'counts' => 'Booking total|Bookings total',
             'view' => 'Bookings',
             'venue_name' => 'Venue Name',
