@@ -119,7 +119,7 @@ class EventLoginController extends Controller
 
 
         $rules = array (
-                'mobile' => 'required|regex:/[0-9]{11}/|digits:11',
+                'mobileNumber' => 'required|regex:/[0-9]{11}/|digits:11',
                 'password' => 'required|max:255' 
         );
 
@@ -130,14 +130,14 @@ class EventLoginController extends Controller
             return response()->json(['success' => false, 'errors'=> $validator->errors() ]);
         } else {
             $Credentials = array (
-                'mobileNumber' => $request->get('mobile'),
+                'mobileNumber' => $request->get('mobileNumber'),
                 'password' => $request->get('password') ,
                 'active' => 1,
                 'confirmed' => 1
             );
 
             if (Auth::attempt($Credentials)) {
-                $save_mobile = array('mobile' => $request->get('mobile'));
+                $save_mobile = array('mobileNumber' => $request->get('mobileNumber'));
                 session ($save_mobile);
                 return response()->json(['success' => true, 'message' => "Successfully Logged In"]);
             } else {

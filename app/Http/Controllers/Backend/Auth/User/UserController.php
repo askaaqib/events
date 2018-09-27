@@ -11,6 +11,7 @@ use App\Repositories\Backend\Auth\PermissionRepository;
 use App\Http\Requests\Backend\Auth\User\StoreUserRequest;
 use App\Http\Requests\Backend\Auth\User\ManageUserRequest;
 use App\Http\Requests\Backend\Auth\User\UpdateUserRequest;
+use Illuminate\Support\Facades\Input;
 
 /**
  * Class UserController.
@@ -146,4 +147,13 @@ class UserController extends Controller
 
         return redirect()->route('admin.auth.user.deleted')->withFlashSuccess(__('alerts.backend.users.deleted'));
     }
+
+    public function userSearch(){
+        $search = Input::get('search');
+        $getSearched = $this->userRepository->getActivePaginatedSearched(25, 'id', 'asc',$search);
+        //dd($getSearched);
+        return view('backend.auth.user.search')
+            ->withUsers($getSearched);        
+               
+    }               
 }

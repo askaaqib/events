@@ -361,4 +361,18 @@ class UserRepository extends BaseRepository
             }
         }
     }
+
+    public function getActivePaginatedSearched($paged = 25, $orderBy = 'created_at', $sort = 'desc',$search = '') : LengthAwarePaginator
+    {
+        return $this->model
+            ->with('roles', 'permissions', 'providers')
+            ->active()
+            ->where('users.first_name', 'LIKE', '%' . $search .'%')
+            ->orWhere('users.last_name', 'LIKE', '%' . $search .'%')
+            ->orWhere('users.name', 'LIKE', '%' . $search .'%')
+            ->orWhere('users.email', 'LIKE', '%' . $search .'%')
+            ->orWhere('users.mobileNumber', 'LIKE', '%' . $search .'%')
+            ->orderBy($orderBy, $sort)
+            ->paginate($paged);
+    }
 }

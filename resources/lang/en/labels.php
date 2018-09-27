@@ -66,6 +66,7 @@ return [
                     'confirmed'      => 'Confirmed',
                     'created'        => 'Created',
                     'email'          => 'E-mail',
+                    'mobile'          => 'Mobile Number',
                     'id'             => 'ID',
                     'last_updated'   => 'Last Updated',
                     'name'           => 'Name',

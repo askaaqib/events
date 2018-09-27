@@ -20,16 +20,22 @@
                 @include('backend.auth.user.includes.header-buttons')
             </div><!--col-->
         </div><!--row-->
-
+        
         <div class="row mt-4">
             <div class="col">
-                <div class="table-responsive">
+                <div class="col-md-3 float-right mb-2">
+                    <form id="user-search-form">
+                        <input class="form-control float-left" type="text" name="search" placeholder="Search" id="search" />
+                        <a href="javascript:void(0);"id="search-btn" class="float-right btn btn-success mt-1">Search</a>      
+                    </form>
+                </div>
+                <div id="user-index-table" class="table-responsive">
                     <table class="table">
                         <thead>
                         <tr>
-                            <th>{{ __('labels.backend.access.users.table.last_name') }}</th>
-                            <th>{{ __('labels.backend.access.users.table.first_name') }}</th>
+                            <th>{{ __('labels.backend.access.users.table.name') }}</th>
                             <th>{{ __('labels.backend.access.users.table.email') }}</th>
+                            <th>{{ __('labels.backend.access.users.table.mobile') }}</th>
                             <th>{{ __('labels.backend.access.users.table.confirmed') }}</th>
                             <th>{{ __('labels.backend.access.users.table.roles') }}</th>
                             <th>{{ __('labels.backend.access.users.table.other_permissions') }}</th>
@@ -41,9 +47,15 @@
                         <tbody>
                         @foreach ($users as $user)
                             <tr>
-                                <td>{{ $user->last_name }}</td>
-                                <td>{{ $user->first_name }}</td>
+                                <td>
+                                    @if($user->name)
+                                        {{ $user->name }}
+                                    @else
+                                       {{ $user->first_name }} {{ $user->last_name }}
+                                    @endif
+                                </td>
                                 <td>{{ $user->email }}</td>
+                                <td>{{ $user->mobileNumber }}</td>
                                 <td>{!! $user->confirmed_label !!}</td>
                                 <td>{!! $user->roles_label !!}</td>
                                 <td>{!! $user->permissions_label !!}</td>
@@ -60,7 +72,7 @@
         <div class="row">
             <div class="col-7">
                 <div class="float-left">
-                    {!! $users->total() !!} {{ trans_choice('labels.backend.access.users.table.total', $users->total()) }}
+                    {{-- {!! $users->total() !!} {{ trans_choice('labels.backend.access.users.table.total', $users->total()) }} --}}
                 </div>
             </div><!--col-->
 

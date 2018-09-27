@@ -12,6 +12,7 @@ Route::group([
     /*
      * User Management
      */
+
     Route::group(['namespace' => 'User'], function () {
 
         /*
@@ -19,7 +20,7 @@ Route::group([
          */
         Route::get('user/deactivated', 'UserStatusController@getDeactivated')->name('user.deactivated');
         Route::get('user/deleted', 'UserStatusController@getDeleted')->name('user.deleted');
-
+        Route::get('user/get-user-search','UserController@userSearch')->name('user.get-user-search');
         /*
          * User CRUD
          */

@@ -12,9 +12,9 @@
                         <div class="row">
                             <div class="col">
                                 <div class="form-group">
-                                    {{ html()->label(__('validation.attributes.frontend.mobileNumber'))->for('mobile') }}
+                                    {{ html()->label(__('validation.attributes.frontend.mobileNumber'))->for('mobileNumber') }}
 
-                                    {{ html()->text('mobile')
+                                    {{ html()->text('mobileNumber')
                                         ->class('form-control')
                                         ->placeholder(__('validation.attributes.frontend.mobileNumber'))
                                         ->attribute('maxlength', 191)

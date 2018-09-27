@@ -29,6 +29,20 @@ jQuery(function(){
        	}
 
     }); 
+    // Search User 
+    $('#user-search-form #search-btn').on('click',function(){       
+          $.ajax({
+          type:'GET',
+          url: "/admin/auth/user/get-user-search",
+          data: {search: $('#user-search-form #search').val()},
+          success: function(data){
+            console.log(data);
+            $('#user-index-table').empty();
+            $('#user-index-table').html(data);
+          }
+      });
+
+    });
 });
 
 $( "#backend-bookings" ).submit(function( event ) {
